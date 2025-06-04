@@ -19,7 +19,7 @@ yes | docker system prune -a
 
 image_tag=southamerica-west1-docker.pkg.dev/cloud-tpu-inference-test/vllm-tpu-bm/vllm-tpu:$commit_hash
 
-DOCKER_BUILDKIT=1 docker build \
+VLLM_TARGET_DEVICE=tpu DOCKER_BUILDKIT=1 docker build \
  --build-arg max_jobs=16 \
  --build-arg USE_SCCACHE=1 \
  --build-arg GIT_REPO_CHECK=0 \
