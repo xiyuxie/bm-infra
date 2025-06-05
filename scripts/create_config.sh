@@ -9,30 +9,38 @@ fi
 # === Config ===
 
 RECORD_ID="$1"
-ENV_FILE="${RECORD_ID}.env"
+mkdir -p ./artifacts
 
-# === Query and extract fields ===
+ENV_FILE="artifacts/${RECORD_ID}.env"
+
+# The script below generates the result in this format:
+# MODEL=meta-llama/Llama-3.1-8B-Instruct
+# MAX_NUM_SEQS=128
+# MAX_NUM_BATCHED_TOKENS=4096
+# TENSOR_PARALLEL_SIZE=1
+# MAX_MODEL_LEN=2048
+# INPUT_LEN=1800
+# OUTPUT_LEN=128
 gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
   --instance="$GCP_INSTANCE_ID" \
   --project="$GCP_PROJECT_ID" \
-  --sql="SELECT MaxNumSeqs, MaxNumBatchedTokens, InputLen, OutputLen FROM RunRecord WHERE RecordId = '$RECORD_ID';" \
-  --format="csv[no-heading]" > tmp.csv
+  --sql="SELECT Model, MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen, InputLen, OutputLen FROM RunRecord WHERE RecordId = 'cbbf98e6-582d-4d';" | \
+  awk 'NR==1 {
+    for (i=1; i<=NF; i++) {
+      # Insert underscore before uppercase letters preceded by a lowercase letter
+      # Then convert to uppercase
+      header[i] = toupper(gensub(/([a-z0-9])([A-Z])/, "\\1_\\2", "g", $i))
+    }
+  }
+  NR==2 {
+    for (i=1; i<=NF; i++) {
+      print header[i] "=" $i
+    }
+  }'> $ENV_FILE
 
-# === Parse CSV and write to .env file ===
-if [ -s tmp.csv ]; then
-  IFS=',' read -r MaxNumSeqs MaxNumBatchedTokens InputLen OutputLen < tmp.csv
+# Insert static field
+echo "TEST_NAME=static" >> $ENV_FILE
+echo "CONTAINER_NAME=vllm-tpu" >> $ENV_FILE
+echo "DOWNLOAD_DIR=/mnt/disks/persist" >> $ENV_FILE
 
-  cat <<EOF > "$ENV_FILE"
-MaxNumSeqs=${MaxNumSeqs}
-MaxNumBatchedTokens=${MaxNumBatchedTokens}
-InputLen=${InputLen}
-OutputLen=${OutputLen}
-EOF
-
-  echo "Saved variables to $ENV_FILE"
-  rm tmp.csv
-else
-  echo "No record found for RecordId = $RECORD_ID"
-  rm -f tmp.csv
-  exit 1
-fi
+cat $ENV_FILE

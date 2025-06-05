@@ -1,4 +1,2 @@
-Status,Device,Model,RunType,CodeHash,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen,Throughput,MedianITL,MedianTPOT,MedianTTFT,P99ITL,P99TPOT,P99TTFT
-INIT,v4-128,gemma,benchmark,abc123def456,128,4096,8,8192,open_orca,512,1024,0.0,10.5,12.2,13.7,20.0,23.5,24.8
-DONE,v5e-256,mistral,eval,def789abc123,64,2048,4,4096,ultrachat,256,512,145.8,8.2,9.1,10.0,18.0,20.0,22.3
-FAILED,v4-64,llama2,test,xyz987uvw654,32,1024,2,2048,sharegpt,128,256,90.0,6.1,6.5,7.0,12.0,13.0,14.5
+Device,Model,RunType,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen
+v6e-1,meta-llama/Llama-3.1-8B-Instruct,benchmark,128,512,1,2048,sonnet,1800,128
