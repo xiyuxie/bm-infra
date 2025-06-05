@@ -1,0 +1,46 @@
+CREATE TABLE RunRecord (
+    RecordId STRING(16) NOT NULL,
+    Status STRING(16) NOT NULL,
+    CreatedTime TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true),
+    Device STRING(16) NOT NULL,
+    Model STRING(128) NOT NULL,
+    RunType STRING(16) NOT NULL,
+    CodeHash STRING(128) NOT NULL,
+    MaxNumSeqs INT64 NOT NULL,
+    MaxNumBatchedTokens INT64 NOT NULL,
+    TensorParallelSize INT64 NOT NULL,
+    MaxModelLen INT64 NOT NULL,
+    Dataset STRING(128) NOT NULL,
+    InputLen INT64 NOT NULL,
+    OutputLen INT64 NOT NULL,
+    Throughput FLOAT64,
+    MedianITL FLOAT64,
+    MedianTPOT FLOAT64,
+    MedianTTFT FLOAT64,
+    P99ITL FLOAT64,
+    P99TPOT FLOAT64,
+    P99TTFT FLOAT64,
+    LastUpdate TIMESTAMP OPTIONS (allow_commit_timestamp=true)
+) PRIMARY KEY (RecordId);
+
+CREATE INDEX IDX_RunRecord_Status ON RunRecord (Status);
+CREATE INDEX IDX_RunRecord_CreatedTime ON RunRecord (CreatedTime);
+CREATE INDEX IDX_RunRecord_Device ON RunRecord (Device);
+CREATE INDEX IDX_RunRecord_LastUpdate ON RunRecord (LastUpdate);
+CREATE INDEX IDX_RunRecord_Model ON RunRecord (Model);
+CREATE INDEX IDX_RunRecord_RunType ON RunRecord (RunType);
+CREATE INDEX IDX_RunRecord_CodeHash ON RunRecord (CodeHash);
+CREATE INDEX IDX_RunRecord_MaxNumSeqs ON RunRecord (MaxNumSeqs);
+CREATE INDEX IDX_RunRecord_MaxNumBatchedTokens ON RunRecord (MaxNumBatchedTokens);
+CREATE INDEX IDX_RunRecord_TensorParallelSize ON RunRecord (TensorParallelSize);
+CREATE INDEX IDX_RunRecord_MaxModelLen ON RunRecord (MaxModelLen);
+CREATE INDEX IDX_RunRecord_Dataset ON RunRecord (Dataset);
+CREATE INDEX IDX_RunRecord_InputLen ON RunRecord (InputLen);
+CREATE INDEX IDX_RunRecord_OutputLen ON RunRecord (OutputLen);
+CREATE INDEX IDX_RunRecord_Throughput ON RunRecord (Throughput);
+CREATE INDEX IDX_RunRecord_MedianITL ON RunRecord (MedianITL);
+CREATE INDEX IDX_RunRecord_MedianTPOT ON RunRecord (MedianTPOT);
+CREATE INDEX IDX_RunRecord_MedianTTFT ON RunRecord (MedianTTFT);
+CREATE INDEX IDX_RunRecord_P99ITL ON RunRecord (P99ITL);
+CREATE INDEX IDX_RunRecord_P99TPOT ON RunRecord (P99TPOT);
+CREATE INDEX IDX_RunRecord_P99TTFT ON RunRecord (P99TTFT);
