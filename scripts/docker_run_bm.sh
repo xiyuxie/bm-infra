@@ -22,7 +22,7 @@ trap remove_docker_container EXIT
 # Remove the container that might not be cleaned up in the previous run.
 remove_docker_container
 
-image_tag=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$commit_hash
+image_tag=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$CODE_HASH
 
 echo "image tag: $image_tag"
 
@@ -34,6 +34,8 @@ if [ $? -ne 0 ]; then
 fi
 
 LOG_ROOT=$(mktemp -d)
+REMOTE_LOG_ROOT="gs://$GCS_BUCKET/job_logs/$RECORD_ID/"
+
 # If mktemp fails, set -e will cause the script to exit.
 echo "Results will be stored in: $LOG_ROOT"
 
@@ -57,7 +59,7 @@ docker run \
  -v $DOWNLOAD_DIR:$DOWNLOAD_DIR \
  --env-file $ENV_FILE \
  -e HF_TOKEN="$HF_TOKEN" \
- -e TARGET_COMMIT=$BUILDKITE_COMMIT \
+ -e TARGET_COMMIT=$CODE_HASH \
  -e MODEL=$MODEL \
  -e WORKSPACE=/workspace \
  --name $CONTAINER_NAME \
@@ -65,11 +67,18 @@ docker run \
  --privileged \
  --network host \
  -v /dev/shm:/dev/shm \
- vllm/vllm-tpu-bm tail -f /dev/null
+ $image_tag tail -f /dev/null
+
+echo "copy script run_bm.sh to container..."
+docker cp scripts/run_bm.sh "$CONTAINER_NAME:/workspace/vllm/run_bm.sh"
+
+echo "grant chmod +x"
+echo
+sudo docker exec "$CONTAINER_NAME" chmod +x "/workspace/vllm/run_bm.sh"
 
 echo "run script..."
 echo
-docker exec "$CONTAINER_NAME" /bin/bash -c ".buildkite/scripts/hardware_ci/run_bm.sh"
+docker exec "$CONTAINER_NAME" /bin/bash -c "./run_bm.sh"
 
 echo "copy result back..."
 VLLM_LOG="$LOG_ROOT/$TEST_NAME"_vllm_log.txt
@@ -80,13 +89,9 @@ docker cp "$CONTAINER_NAME:/workspace/bm_log.txt" "$BM_LOG"
 throughput=$(grep "Request throughput (req/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
 echo "throughput for $TEST_NAME at $BUILDKITE_COMMIT: $throughput"
 
-if [ "$BUILDKITE" = "true" ]; then
-  echo "Running inside Buildkite"
-  buildkite-agent artifact upload "$VLLM_LOG" 
-  buildkite-agent artifact upload "$BM_LOG"
-else
-  echo "Not running inside Buildkite"
-fi
+
+echo "gsutil cp $LOG_ROOT/* $REMOTE_LOG_ROOT"
+gsutil cp $LOG_ROOT/* $REMOTE_LOG_ROOT
 
 #
 # compare the throughput with EXPECTED_THROUGHPUT 
@@ -101,3 +106,6 @@ if (( $(echo "$throughput < $EXPECTED_THROUGHPUT" | bc -l) )); then
   echo "Error: throughput($throughput) is less than expected($EXPECTED_THROUGHPUT)"
   exit 1
 fi
+
+# write output
+echo "Throughput=$throughput" > "artifacts/$RECORD_ID.result"

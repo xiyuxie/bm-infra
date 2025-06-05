@@ -24,7 +24,7 @@ ENV_FILE="artifacts/${RECORD_ID}.env"
 gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
   --instance="$GCP_INSTANCE_ID" \
   --project="$GCP_PROJECT_ID" \
-  --sql="SELECT Model, CodeHash, MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen, InputLen, OutputLen FROM RunRecord WHERE RecordId = 'cbbf98e6-582d-4d';" | \
+  --sql="SELECT RecordId, Model, CodeHash, MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen, InputLen, OutputLen FROM RunRecord WHERE RecordId = '$RECORD_ID';" | \
   awk 'NR==1 {
     for (i=1; i<=NF; i++) {
       # Insert underscore before uppercase letters preceded by a lowercase letter
@@ -42,5 +42,3 @@ gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
 echo "TEST_NAME=static" >> $ENV_FILE
 echo "CONTAINER_NAME=vllm-tpu" >> $ENV_FILE
 echo "DOWNLOAD_DIR=/mnt/disks/persist" >> $ENV_FILE
-
-cat $ENV_FILE
