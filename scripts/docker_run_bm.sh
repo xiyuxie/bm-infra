@@ -22,15 +22,16 @@ trap remove_docker_container EXIT
 # Remove the container that might not be cleaned up in the previous run.
 remove_docker_container
 
-# Build docker image.
-# TODO: build the image outside the script and share the image with other
-# tpu test if building time is too long.
-DOCKER_BUILDKIT=1 docker build \
-  --build-arg max_jobs=16 \
-  --build-arg USE_SCCACHE=1 \
-  --build-arg GIT_REPO_CHECK=0 \
-  --tag vllm/vllm-tpu-bm \
-  --progress plain -f docker/Dockerfile.tpu .
+image_tag=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$commit_hash
+
+echo "image tag: $image_tag"
+
+docker pull $image_tag
+
+if [ $? -ne 0 ]; then
+  echo "Failed to pull the Docker image: $image_tag"
+  exit 1
+fi
 
 LOG_ROOT=$(mktemp -d)
 # If mktemp fails, set -e will cause the script to exit.

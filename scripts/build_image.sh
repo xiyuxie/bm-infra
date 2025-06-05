@@ -17,7 +17,9 @@ commit_hash=$(git rev-parse HEAD)
 
 yes | docker system prune -a
 
-image_tag=southamerica-west1-docker.pkg.dev/cloud-tpu-inference-test/vllm-tpu-bm/vllm-tpu:$commit_hash
+image_tag=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$commit_hash
+
+echo "image tag: $image_tag"
 
 VLLM_TARGET_DEVICE=tpu DOCKER_BUILDKIT=1 docker build \
  --build-arg max_jobs=16 \
