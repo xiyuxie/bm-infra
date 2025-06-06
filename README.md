@@ -38,3 +38,17 @@ gcloud spanner databases delete $GCP_DATABASE_ID \
  --instance=$GCP_INSTANCE_ID \
  --project=$GCP_PROJECT_ID
 ```
+
+### Test Run command
+
+Insert runs to database
+
+```
+./scripts/insert_run.sh ./configs/case1.csv a408820f2fcdd4025f05f8a43dc15604fe534367
+```
+
+Trigger run by Record id
+
+```
+./script/run_job.sh 5b5040f7-c815-4a87-ab8e-54a49fd49916
+```

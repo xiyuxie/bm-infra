@@ -1,5 +1,5 @@
 CREATE TABLE RunRecord (
-    RecordId STRING(32) NOT NULL,
+    RecordId STRING(64) NOT NULL,
     Status STRING(16) NOT NULL,
     CreatedTime TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true),
     Device STRING(16) NOT NULL,

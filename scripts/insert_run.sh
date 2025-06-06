@@ -23,7 +23,7 @@ fi
 # === Read CSV and skip header ===
 tail -n +2 "$CSV_FILE" | while IFS=',' read -r DEVICE MODEL RUNTYPE MAX_NUM_SEQS MAX_NUM_BATCHED_TOKENS TENSOR_PARALLEL_SIZE MAX_MODEL_LEN DATASET INPUT_LEN OUTPUT_LEN
 do
-  RECORD_ID=$(uuidgen | tr 'A-Z' 'a-z' | cut -c1-16)
+  RECORD_ID=$(uuidgen | tr 'A-Z' 'a-z')
 
   gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
     --instance="$GCP_INSTANCE_ID" \
