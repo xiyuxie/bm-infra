@@ -25,3 +25,9 @@ if [ $? -ne 0 ]; then
   echo "Error running job in docker."
   exit 1
 fi
+
+#
+# Report result
+#
+echo "Reporting result..."
+./scripts/report_result.sh "$record_id"
