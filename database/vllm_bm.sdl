@@ -1,5 +1,5 @@
 CREATE TABLE RunRecord (
-    RecordId STRING(16) NOT NULL,
+    RecordId STRING(32) NOT NULL,
     Status STRING(16) NOT NULL,
     CreatedTime TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true),
     Device STRING(16) NOT NULL,
@@ -11,6 +11,7 @@ CREATE TABLE RunRecord (
     TensorParallelSize INT64 NOT NULL,
     MaxModelLen INT64 NOT NULL,
     Dataset STRING(128) NOT NULL,
+    RunBy STRING(32),
     InputLen INT64 NOT NULL,
     OutputLen INT64 NOT NULL,
     Throughput FLOAT64,
