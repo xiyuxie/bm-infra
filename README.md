@@ -7,6 +7,7 @@ export GCP_DATABASE_ID=vllm-bm-runs
 export GCP_REGION=southamerica-west1
 export GCS_BUCKET=vllm-cb-storage2
 export GCS_INSTANCE_NAME=cuiq-infer-v6e-1-1
+export GCP_QUEUE=vllm-bm-queue-v6e-1
 export HF_TOKEN=<>
 ```
 
@@ -37,6 +38,29 @@ Delete database
 gcloud spanner databases delete $GCP_DATABASE_ID \
  --instance=$GCP_INSTANCE_ID \
  --project=$GCP_PROJECT_ID
+```
+
+### Create the Pub/sub queue.
+
+Create pubsub
+
+```
+gcloud pubsub topics create vllm-bm-queue-v6e-1 \
+  --project="$GCP_PROJECT_ID"
+
+gcloud pubsub topics create vllm-bm-queue-v6e-8 \
+  --project="$GCP_PROJECT_ID"
+
+```
+
+Delete pubsub top
+
+```
+gcloud pubsub topics delete vllm-bm-queue-v6e-1 \
+ --project=YOUR_PROJECT_ID
+
+gcloud pubsub topics delete vllm-bm-queue-v6e-8 \
+ --project=YOUR_PROJECT_ID
 ```
 
 ### Test Run command
