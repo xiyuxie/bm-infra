@@ -9,6 +9,10 @@ export GCS_BUCKET=vllm-cb-storage2
 export GCS_INSTANCE_NAME=cuiq-infer-v6e-1-1
 export GCP_QUEUE=vllm-bm-queue-v6e-1
 export HF_TOKEN=<>
+
+sudo apt-get update && sudo apt-get install -y jq
+
+
 ```
 
 ### Create and Delete Detabase
@@ -45,11 +49,27 @@ gcloud spanner databases delete $GCP_DATABASE_ID \
 Create pubsub
 
 ```
+
+# create topic
 gcloud pubsub topics create vllm-bm-queue-v6e-1 \
   --project="$GCP_PROJECT_ID"
 
+# create agent subscription
+gcloud pubsub subscriptions create vllm-bm-queue-v6e-1-agent \
+  --project="$GCP_PROJECT_ID" \
+  --topic="vllm-bm-queue-v6e-1" \
+  --ack-deadline=600
+
+
+# create topic
 gcloud pubsub topics create vllm-bm-queue-v6e-8 \
   --project="$GCP_PROJECT_ID"
+
+gcloud pubsub subscriptions create vllm-bm-queue-v6e-8-agent \
+  --project="$GCP_PROJECT_ID" \
+  --topic="vllm-bm-queue-v6e-8" \
+  --ack-deadline=600
+
 
 ```
 
