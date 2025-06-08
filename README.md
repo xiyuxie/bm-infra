@@ -1,5 +1,7 @@
 # bm-infra
 
+### Machine configs.
+
 ```
 export GCP_PROJECT_ID=cloud-tpu-inference-test
 export GCP_INSTANCE_ID=vllm-bm-inst
@@ -72,10 +74,9 @@ gcloud pubsub subscriptions create vllm-bm-queue-v6e-8-agent \
   --topic="vllm-bm-queue-v6e-8" \
   --ack-deadline=600
 
-
 ```
 
-Delete pubsub top
+Delete pubsub
 
 ```
 gcloud pubsub topics delete vllm-bm-queue-v6e-1 \
@@ -83,6 +84,18 @@ gcloud pubsub topics delete vllm-bm-queue-v6e-1 \
 
 gcloud pubsub topics delete vllm-bm-queue-v6e-8 \
  --project=YOUR_PROJECT_ID
+```
+
+Give permission to service account. 
+
+```
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="<service account>" \
+  --role="roles/pubsub.publisher"
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="<service account>" \
+  --role="roles/pubsub.subscriber"
 ```
 
 ### Test Run command
