@@ -12,11 +12,14 @@ fi
 RECORD_ID="$1"
 echo "Record ID: $RECORD_ID"
 
+echo "deleting artifacts".
+rm -rf artifacts
+
 #
 # Create running config
 #
 echo "Creating running config..."
-./scripts/create_config.sh "$RECORD_ID"
+./scripts/agent/create_config.sh "$RECORD_ID"
 if [ $? -ne 0 ]; then
   echo "Error creating running config."
   exit 1
@@ -26,7 +29,7 @@ fi
 # Run job in docker
 #
 echo "Running job in docker..."
-./scripts/docker_run_bm.sh "artifacts/${RECORD_ID}.env"
+./scripts/agent/docker_run_bm.sh "artifacts/${RECORD_ID}.env"
 if [ $? -ne 0 ]; then
   echo "Error running job in docker."
   exit 1
@@ -36,4 +39,4 @@ fi
 # Report result
 #
 echo "Reporting result..."
-./scripts/report_result.sh "$RECORD_ID"
+./scripts/agent/report_result.sh "$RECORD_ID"

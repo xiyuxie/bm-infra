@@ -47,8 +47,8 @@ while true; do
       --ack-ids="$ACK_ID"
     echo "Message acknowledged."
     # do the work
-    echo "scripts/run_job.sh $RECORD_ID"
-    ./scripts/run_job.sh "$RECORD_ID"
+    echo "scripts/agent/run_job.sh $RECORD_ID"
+    ./scripts/agent/run_job.sh "$RECORD_ID"
   else
     echo "Invalid message. Skipping ack."
     continue    

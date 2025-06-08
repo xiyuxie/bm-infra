@@ -70,7 +70,7 @@ docker run \
  $image_tag tail -f /dev/null
 
 echo "copy script run_bm.sh to container..."
-docker cp scripts/run_bm.sh "$CONTAINER_NAME:/workspace/vllm/run_bm.sh"
+docker cp scripts/agent/run_bm.sh "$CONTAINER_NAME:/workspace/vllm/run_bm.sh"
 
 echo "grant chmod +x"
 echo
