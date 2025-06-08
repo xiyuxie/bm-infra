@@ -74,7 +74,7 @@ docker cp scripts/run_bm.sh "$CONTAINER_NAME:/workspace/vllm/run_bm.sh"
 
 echo "grant chmod +x"
 echo
-sudo docker exec "$CONTAINER_NAME" chmod +x "/workspace/vllm/run_bm.sh"
+docker exec "$CONTAINER_NAME" chmod +x "/workspace/vllm/run_bm.sh"
 
 echo "run script..."
 echo

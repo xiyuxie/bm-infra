@@ -1,5 +1,24 @@
 # bm-infra
 
+### Service account setup (draft) 
+
+```
+# create user
+sudo useradd -m -s /bin/bash bm-agent
+
+# give docker permission
+sudo usermod -aG docker bm-agent
+
+
+# delete 
+sudo userdel -r bm-agent
+
+# "login" to this user.
+sudo su - bm-agent
+
+
+```
+
 ### Machine configs.
 
 ```
@@ -15,7 +34,7 @@ export HF_TOKEN=<>
 
 sudo apt-get update && sudo apt-get install -y jq
 
-gcloud auth configure-docker $GCP_REGION.pkg.dev
+yes | gcloud auth configure-docker $GCP_REGION-docker.pkg.dev
 
 ```
 
