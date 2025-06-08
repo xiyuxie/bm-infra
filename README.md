@@ -7,8 +7,14 @@ export GCP_DATABASE_ID=vllm-bm-runs
 export GCP_REGION=southamerica-west1
 export GCP_INSTANCE_NAME=cuiq-infer-v6e-1-1
 export GCS_BUCKET=vllm-cb-storage2
+export GCP_QUEUE=vllm-bm-queue-v6e-1
 
 export HF_TOKEN=<>
+
+sudo apt-get update && sudo apt-get install -y jq
+
+gcloud auth configure-docker $GCP_REGION.pkg.dev
+
 ```
 
 ### Create and Delete Detabase
@@ -40,6 +46,45 @@ gcloud spanner databases delete $GCP_DATABASE_ID \
  --project=$GCP_PROJECT_ID
 ```
 
+### Create the Pub/sub queue.
+
+Create pubsub
+
+```
+
+# create topic
+gcloud pubsub topics create vllm-bm-queue-v6e-1 \
+  --project="$GCP_PROJECT_ID"
+
+# create agent subscription
+gcloud pubsub subscriptions create vllm-bm-queue-v6e-1-agent \
+  --project="$GCP_PROJECT_ID" \
+  --topic="vllm-bm-queue-v6e-1" \
+  --ack-deadline=600
+
+
+# create topic
+gcloud pubsub topics create vllm-bm-queue-v6e-8 \
+  --project="$GCP_PROJECT_ID"
+
+gcloud pubsub subscriptions create vllm-bm-queue-v6e-8-agent \
+  --project="$GCP_PROJECT_ID" \
+  --topic="vllm-bm-queue-v6e-8" \
+  --ack-deadline=600
+
+
+```
+
+Delete pubsub top
+
+```
+gcloud pubsub topics delete vllm-bm-queue-v6e-1 \
+ --project=YOUR_PROJECT_ID
+
+gcloud pubsub topics delete vllm-bm-queue-v6e-8 \
+ --project=YOUR_PROJECT_ID
+```
+
 ### Test Run command
 
 Insert runs to database
@@ -53,3 +98,4 @@ Trigger run by Record id
 ```
 ./script/run_job.sh 5b5040f7-c815-4a87-ab8e-54a49fd49916
 ```
+
