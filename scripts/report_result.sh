@@ -9,11 +9,14 @@ fi
 RECORD_ID="$1"
 RESULT_FILE="artifacts/${RECORD_ID}.result"
 
-# Default to just updating status if file is missing
+# Ensure GCP_INSTANCE_NAME is set
+: "${GCP_INSTANCE_NAME:?Need to set GCP_INSTANCE_NAME}"
+
+# Case 1: result file does not exist → mark as FAILED
 if [ ! -f "$RESULT_FILE" ]; then
   echo "Result file not found: $RESULT_FILE. Marking status as FAILED."
 
-  SQL="UPDATE RunRecord SET Status='FAILED', LastUpdate=CURRENT_TIMESTAMP() WHERE RecordId = '${RECORD_ID}';"
+  SQL="UPDATE RunRecord SET Status='FAILED', RunBy='${GCP_INSTANCE_NAME}', LastUpdate=CURRENT_TIMESTAMP() WHERE RecordId = '${RECORD_ID}';"
 
   echo "Executing SQL:"
   echo "$SQL"
@@ -26,7 +29,7 @@ if [ ! -f "$RESULT_FILE" ]; then
   exit 0
 fi
 
-# Parse result file
+# Case 2: result file exists → parse and mark as COMPLETED
 assignments=""
 while IFS='=' read -r key value; do
   if [[ -n "$key" && -n "$value" ]]; then
@@ -38,19 +41,18 @@ while IFS='=' read -r key value; do
   fi
 done < "$RESULT_FILE"
 
-# Clean trailing comma
+# Clean up trailing comma+space
 assignments="${assignments%, }"
 
-# Add status + timestamp
-assignments="${assignments}, Status='COMPLETED', LastUpdate=CURRENT_TIMESTAMP()"
+# Add status, RunBy, and timestamp
+assignments="${assignments}, Status='COMPLETED', RunBy='${GCP_INSTANCE_NAME}', LastUpdate=CURRENT_TIMESTAMP()"
 
-# Final SQL
+# Build SQL
 SQL="UPDATE RunRecord SET ${assignments} WHERE RecordId = '${RECORD_ID}';"
 
 echo "Executing SQL:"
 echo "$SQL"
 
-# Execute
 gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
   --project="$GCP_PROJECT_ID" \
   --instance="$GCP_INSTANCE_ID" \
