@@ -46,7 +46,12 @@ while true; do
       --project="$GCP_PROJECT_ID" \
       --ack-ids="$ACK_ID"
     echo "Message acknowledged."
+    # do the work
+    echo "scripts/run_job.sh $RECORD_ID"
+    ./scripts/run_job.sh "$RECORD_ID"
   else
     echo "Invalid message. Skipping ack."
-  fi  
+    continue    
+  fi
+  
 done

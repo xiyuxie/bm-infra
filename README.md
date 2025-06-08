@@ -12,6 +12,7 @@ export HF_TOKEN=<>
 
 sudo apt-get update && sudo apt-get install -y jq
 
+gcloud auth configure-docker $GCP_REGION.pkg.dev
 
 ```
 
@@ -96,3 +97,4 @@ Trigger run by Record id
 ```
 ./script/run_job.sh 5b5040f7-c815-4a87-ab8e-54a49fd49916
 ```
+
