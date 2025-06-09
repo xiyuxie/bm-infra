@@ -4,6 +4,10 @@
 QUEUE_WAITING=5
 
 SUBSCRIPTION_NAME="$GCP_QUEUE-agent"
+
+echo "git pull"
+git pull
+
 while true; do
   echo "Polling for message..."
 
@@ -39,7 +43,6 @@ while true; do
   RECORD_ID="${kv[RecordId]}"  
 
   echo "Parsed RecordId: $RECORD_ID"  
-  echo "PWD=$(pwd)"
   # Simulate processing success
   if [ -n "$RECORD_ID" ]; then
     gcloud pubsub subscriptions ack "$SUBSCRIPTION_NAME" \
