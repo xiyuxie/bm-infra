@@ -131,3 +131,13 @@ Trigger run by Record id
 ./script/run_job.sh 5b5040f7-c815-4a87-ab8e-54a49fd49916
 ```
 
+### Debug
+
+```
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable bm-agent.service
+sudo systemctl start bm-agent.service
+sudo systemctl status bm-agent.service
+sudo rm /etc/systemd/system/bm-agent.service
+```
