@@ -39,7 +39,7 @@ while true; do
   RECORD_ID="${kv[RecordId]}"  
 
   echo "Parsed RecordId: $RECORD_ID"  
-
+  echo "PWD=$(pwd)"
   # Simulate processing success
   if [ -n "$RECORD_ID" ]; then
     gcloud pubsub subscriptions ack "$SUBSCRIPTION_NAME" \
