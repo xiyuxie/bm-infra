@@ -138,6 +138,7 @@ sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable bm-agent.service
 sudo systemctl start bm-agent.service
+sudo systemctl stop bm-agent.service
 sudo systemctl status bm-agent.service
 sudo systemctl restart bm-agent.service
 
