@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # === Usage ===
-if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 input.csv CODEHASH"
+if [ "$#" -ne 4 ]; then
+  echo "Usage: $0 input.csv CODEHASH JOB_REFERENCE RUN_TYPE"
   exit 1
 fi
 
 CSV_FILE="$1"
 CODEHASH="$2"
+JOB_REFERENCE="$3"
+RUN_TYPE="$4"
 
 if [ ! -f "$CSV_FILE" ]; then
   echo "CSV file not found: $CSV_FILE"
@@ -21,7 +23,7 @@ fi
 # export GCP_DATABASE_ID="your-database"
 
 # === Read CSV and skip header ===
-tail -n +2 "$CSV_FILE" | while IFS=',' read -r DEVICE MODEL RUNTYPE MAX_NUM_SEQS MAX_NUM_BATCHED_TOKENS TENSOR_PARALLEL_SIZE MAX_MODEL_LEN DATASET INPUT_LEN OUTPUT_LEN
+tail -n +2 "$CSV_FILE" | while IFS=',' read -r DEVICE MODEL MAX_NUM_SEQS MAX_NUM_BATCHED_TOKENS TENSOR_PARALLEL_SIZE MAX_MODEL_LEN DATASET INPUT_LEN OUTPUT_LEN
 do
   RECORD_ID=$(uuidgen | tr 'A-Z' 'a-z')
 
@@ -42,11 +44,11 @@ do
     --sql="INSERT INTO RunRecord (
       RecordId, Status, CreatedTime, Device, Model, RunType, CodeHash,
       MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen,
-      Dataset, InputLen, OutputLen, LastUpdate
+      Dataset, InputLen, OutputLen, LastUpdate, CreatedBy,JobReference
     ) VALUES (
-      '$RECORD_ID', 'CREATED', PENDING_COMMIT_TIMESTAMP(), '$DEVICE', '$MODEL', '$RUNTYPE', '$CODEHASH',
+      '$RECORD_ID', 'CREATED', PENDING_COMMIT_TIMESTAMP(), '$DEVICE', '$MODEL', '$RUN_TYPE', '$CODEHASH',
       $MAX_NUM_SEQS, $MAX_NUM_BATCHED_TOKENS, $TENSOR_PARALLEL_SIZE, $MAX_MODEL_LEN,
-      '$DATASET', $INPUT_LEN, $OUTPUT_LEN, PENDING_COMMIT_TIMESTAMP()
+      '$DATASET', $INPUT_LEN, $OUTPUT_LEN, PENDING_COMMIT_TIMESTAMP(), '$USER', '$JOB_REFERENCE'
     );"  
 
   echo "Publishing to Pub/Sub queue: $GCP_QUEUE"

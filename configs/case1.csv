@@ -1,2 +1,2 @@
-Device,Model,RunType,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,benchmark,128,512,1,2048,sonnet,1800,128
+Device,Model,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen
+v6e-1,meta-llama/Llama-3.1-8B-Instruct,128,512,1,2048,sonnet,1800,128

@@ -3,12 +3,14 @@ set -euo pipefail
 
 # Check at least 1 argument is provided
 if [[ $# -lt 1 ]]; then
-    echo "Usage: $0 <INPUT_CSV> [CODE_HASH]"
+    echo "Usage: $0 <INPUT_CSV> [CODE_HASH] [JOB_REFERENCE] [RUN_TYPE]"
     exit 1
 fi
 
 INPUT_CSV="$1"
 CODE_HASH="${2:-}"  # optional
+JOB_REFERENCE="${3:-}"
+RUN_TYPE="${4:-"MANUAL"}"
 
 echo "Recreating artifacts directory"
 rm -rf artifacts/
@@ -32,4 +34,4 @@ echo "./scripts/scheduler/build_image.sh $CODE_HASH"
 ./scripts/scheduler/build_image.sh "$CODE_HASH"
 
 echo "./scripts/scheduler/schedule_run.sh $INPUT_CSV $CODE_HASH"
-./scripts/scheduler/schedule_run.sh "$INPUT_CSV" "$CODE_HASH"
+./scripts/scheduler/schedule_run.sh "$INPUT_CSV" "$CODE_HASH" "$JOB_REFERENCE" "$RUN_TYPE"

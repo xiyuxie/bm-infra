@@ -11,6 +11,8 @@ CREATE TABLE RunRecord (
     TensorParallelSize INT64 NOT NULL,
     MaxModelLen INT64 NOT NULL,
     Dataset STRING(128) NOT NULL,
+    CreatedBy STRING(32) NOT NULL,
+    JobReference STRING(128),
     RunBy STRING(32),
     InputLen INT64 NOT NULL,
     OutputLen INT64 NOT NULL,
@@ -36,6 +38,8 @@ CREATE INDEX IDX_RunRecord_MaxNumBatchedTokens ON RunRecord (MaxNumBatchedTokens
 CREATE INDEX IDX_RunRecord_TensorParallelSize ON RunRecord (TensorParallelSize);
 CREATE INDEX IDX_RunRecord_MaxModelLen ON RunRecord (MaxModelLen);
 CREATE INDEX IDX_RunRecord_Dataset ON RunRecord (Dataset);
+CREATE INDEX IDX_RunRecord_CreatedBy ON RunRecord (CreatedBy);
+CREATE INDEX IDX_RunRecord_JobReference ON RunRecord (JobReference);
 CREATE INDEX IDX_RunRecord_InputLen ON RunRecord (InputLen);
 CREATE INDEX IDX_RunRecord_OutputLen ON RunRecord (OutputLen);
 CREATE INDEX IDX_RunRecord_Throughput ON RunRecord (Throughput);
