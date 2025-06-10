@@ -119,6 +119,12 @@ gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
 
 ### Test Run command
 
+Create a job
+
+```
+./scripts/scheduler/create_job.sh ./configs/case1.csv
+```
+
 Insert runs to database
 
 ```

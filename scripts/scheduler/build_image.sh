@@ -1,36 +1,42 @@
 #!/bin/bash
+set -euo pipefail
 
-rm -rf artifacts/
-mkdir -p artifacts/
+CODE_HASH=$1
 
-# enlist code
-git clone https://github.com/vllm-project/vllm.git artifacts/vllm
-
-# into
 pushd artifacts/vllm
 
-if [[ -n "$TARGET_COMMIT" ]]; then
-    git reset --hard "$TARGET_COMMIT"
+image_tag="$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$CODE_HASH"
+
+echo "Image tag: $image_tag"
+
+# 1. Check if image exists remotely
+if gcloud artifacts docker images list "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu" \
+    --project="$GCP_PROJECT_ID" \
+    --format="value(tags)" \
+    | grep -qw "$CODE_HASH"; then
+    echo "Remote image $image_tag already exists. Skipping build and push."
+    popd
+    exit 0
 fi
 
-commit_hash=$(git rev-parse HEAD)
+# 2. Check if image exists locally
+if docker image inspect "$image_tag" &>/dev/null; then
+    echo "Local image exists. Skipping build. Pushing..."
+    docker push "$image_tag"
+    popd
+    exit 0
+fi
 
-yes | docker system prune -a
-
-image_tag=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$commit_hash
-
-echo "image tag: $image_tag"
-
+# 3. Build and push if image doesn't exist at all
+echo "Building and pushing new image: $image_tag"
 VLLM_TARGET_DEVICE=tpu DOCKER_BUILDKIT=1 docker build \
  --build-arg max_jobs=16 \
  --build-arg USE_SCCACHE=1 \
  --build-arg GIT_REPO_CHECK=0 \
- --tag $image_tag \
+ --tag "$image_tag" \
  --progress plain \
  -f docker/Dockerfile.tpu .
 
-docker push $image_tag
+docker push "$image_tag"
 
-# get back
 popd
-
