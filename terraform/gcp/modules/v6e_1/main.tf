@@ -31,6 +31,12 @@ resource "google_tpu_v2_vm" "tpu_v6_1_bm" {
   metadata = {
     "startup-script" = <<-EOF
       #!/bin/bash
+      GCP_REGION="${var.region}"
+
+      # Set env vars system-wide #### TODO, not done yet
+      echo "GCP_PROJECT_ID=${var.project_id}" >> /etc/environment
+      echo "GCP_REGION=${var.region}" >> /etc/environment
+      echo "GCS_BUCKET=${var.gcs_bucket}" >> /etc/environment
 
       apt-get update
       apt-get install -y curl build-essential jq
@@ -50,6 +56,21 @@ resource "google_tpu_v2_vm" "tpu_v6_1_bm" {
       systemctl stop docker
       systemctl daemon-reload
       systemctl start docker
+
+      useradd -m -s /bin/bash bm-agent
+      sudo usermod -aG docker bm-agent
+
+      # Run the commands below as bm-agent user:
+      sudo -u bm-agent -i bash << EOBM
+      gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+      rm -rf bm-infra
+      git clone https://github.com/QiliangCui/bm-infra.git
+      EOBM
+      cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
+      systemctl stop bm-agent.service
+      systemctl daemon-reload
+      systemctl enable bm-agent.service
+      systemctl start bm-agent.service
     EOF
   }
 }

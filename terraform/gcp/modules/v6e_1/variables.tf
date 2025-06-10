@@ -9,3 +9,11 @@ variable "tpu_zone" {
   description = "Zone to deploy TPU VMs and disks"
   default     = "southamerica-west1-a"
 }
+
+variable "region" {
+    default = "southamerica-west1"
+}
+
+variable "project_id" {
+  default = "cloud-tpu-inference-test"
+}

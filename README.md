@@ -119,10 +119,16 @@ gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
 
 ### Test Run command
 
+Create a job
+
+```
+./scripts/scheduler/create_job.sh ./configs/case1.csv
+```
+
 Insert runs to database
 
 ```
-./scripts/insert_run.sh ./configs/case1.csv a408820f2fcdd4025f05f8a43dc15604fe534367
+./scripts/scheduler/schedule_run.sh ./configs/case1.csv a408820f2fcdd4025f05f8a43dc15604fe534367
 ```
 
 Trigger run by Record id
