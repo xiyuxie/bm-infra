@@ -43,18 +43,26 @@ while true; do
   RECORD_ID="${kv[RecordId]}"  
 
   echo "Parsed RecordId: $RECORD_ID"  
-  # Simulate processing success
-  if [ -n "$RECORD_ID" ]; then
-    gcloud pubsub subscriptions ack "$SUBSCRIPTION_NAME" \
-      --project="$GCP_PROJECT_ID" \
-      --ack-ids="$ACK_ID"
-    echo "Message acknowledged."
-    # do the work
-    echo "scripts/agent/run_job.sh $RECORD_ID"
-    ./scripts/agent/run_job.sh "$RECORD_ID"
-  else
-    echo "Invalid message. Skipping ack."
-    continue    
+
+  if [ -z "$RECORD_ID" ] || [ "$RECORD_ID" == "null" ]; then
+    echo "Invalid or missing record_id. Skipping message without ack."
+    continue
   fi
+  
+  # Update status to RUNNING
+  echo "Setting record $RECORD_ID status to RUNNING..."
+  gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
+    --project="$GCP_PROJECT_ID" \
+    --instance="$GCP_INSTANCE_ID" \
+    --sql="UPDATE RunRecord SET Status='RUNNING', LastUpdateTime=CURRENT_TIMESTAMP() WHERE RecordId='$RECORD_ID'"
+
+  gcloud pubsub subscriptions ack "$SUBSCRIPTION_NAME" \
+    --project="$GCP_PROJECT_ID" \
+    --ack-ids="$ACK_ID"
+  echo "Message acknowledged."  
+  
+  # do the work
+  echo "./scripts/agent/run_job.sh $RECORD_ID"
+  ./scripts/agent/run_job.sh "$RECORD_ID"
   
 done
