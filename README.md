@@ -142,5 +142,7 @@ sudo systemctl stop bm-agent.service
 sudo systemctl status bm-agent.service
 sudo systemctl restart bm-agent.service
 
+sudo journalctl -u bm-agent
+sudo journalctl -u bm-agent -f
 sudo rm /etc/systemd/system/bm-agent.service
 ```
