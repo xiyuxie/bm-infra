@@ -63,6 +63,6 @@ while true; do
   
   # do the work
   echo "./scripts/agent/run_job.sh $RECORD_ID"
-  ./scripts/agent/run_job.sh "$RECORD_ID"
+  # ./scripts/agent/run_job.sh "$RECORD_ID"
   
 done
