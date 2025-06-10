@@ -54,7 +54,7 @@ while true; do
   gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
     --project="$GCP_PROJECT_ID" \
     --instance="$GCP_INSTANCE_ID" \
-    --sql="UPDATE RunRecord SET Status='RUNNING', LastUpdateTime=CURRENT_TIMESTAMP() WHERE RecordId='$RECORD_ID'"
+    --sql="UPDATE RunRecord SET Status='RUNNING', LastUpdate=CURRENT_TIMESTAMP() WHERE RecordId='$RECORD_ID'"
 
   gcloud pubsub subscriptions ack "$SUBSCRIPTION_NAME" \
     --project="$GCP_PROJECT_ID" \
