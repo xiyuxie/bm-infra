@@ -25,6 +25,17 @@ tail -n +2 "$CSV_FILE" | while IFS=',' read -r DEVICE MODEL RUNTYPE MAX_NUM_SEQS
 do
   RECORD_ID=$(uuidgen | tr 'A-Z' 'a-z')
 
+  # calculate the queue name from the device
+  QUEUE_TOPIC="vllm-bm-queue-$DEVICE"
+
+  # Check if the topic exists
+  if ! gcloud pubsub topics describe "$QUEUE_TOPIC" --project="$GCP_PROJECT_ID" &>/dev/null; then
+    echo "Topic '$QUEUE_TOPIC' does not exist in $GCP_PROJECT_ID."
+    echo "Skip creating record in RunRecord table."
+    continue
+  fi
+
+  echo "Inserting RecordId: $RECORD_ID"
   gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
     --instance="$GCP_INSTANCE_ID" \
     --project="$GCP_PROJECT_ID" \
@@ -36,7 +47,13 @@ do
       '$RECORD_ID', 'CREATED', PENDING_COMMIT_TIMESTAMP(), '$DEVICE', '$MODEL', '$RUNTYPE', '$CODEHASH',
       $MAX_NUM_SEQS, $MAX_NUM_BATCHED_TOKENS, $TENSOR_PARALLEL_SIZE, $MAX_MODEL_LEN,
       '$DATASET', $INPUT_LEN, $OUTPUT_LEN, PENDING_COMMIT_TIMESTAMP()
-    );"
+    );"  
 
-  echo "Inserted RecordId: $RECORD_ID"
+  echo "Publishing to Pub/Sub queue: $GCP_QUEUE"
+  # Construct key-value string
+  MESSAGE_BODY="RecordId=$RECORD_ID"
+  # Publish the message
+  gcloud pubsub topics publish $QUEUE_TOPIC \
+    --project="$GCP_PROJECT_ID" \
+    --message="$MESSAGE_BODY"
 done
