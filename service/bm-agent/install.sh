@@ -28,6 +28,9 @@ EOF
 echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
 sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
 
+echo "sudo systemctl daemon-reload"
+sudo systemctl daemon-reload
+
 echo "sudo systemctl enable bm-agent.service"
 sudo systemctl enable bm-agent.service
 
