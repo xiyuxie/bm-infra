@@ -50,6 +50,11 @@ if [ ! -d "$DOWNLOAD_DIR" ]; then
     exit 1
 fi
 
+if ! mountpoint -q "$DOWNLOAD_DIR"; then
+    echo "Error: $DOWNLOAD_DIR exists but is not a mounted directory."
+    exit 1
+fi
+
 echo "Run model $MODEL"
 echo
 
