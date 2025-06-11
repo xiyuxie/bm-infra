@@ -180,3 +180,12 @@ sudo userdel -r bm-agent
 # "login" to this user.
 sudo su - bm-agent
 ```
+
+buid a local image with local changes
+
+```
+# 1. go to the vllm folder. 
+# 2. make the changes.
+# 3. do git commit.
+# run the script scripts/build_and_push_local_image.sh
+```
