@@ -61,8 +61,15 @@ while true; do
     --ack-ids="$ACK_ID"
   echo "Message acknowledged."  
   
+  #
   # do the work
+  # 
   echo "./scripts/agent/run_job.sh $RECORD_ID"
   ./scripts/agent/run_job.sh "$RECORD_ID"
   
+  #
+  # Report result
+  #
+  echo "Reporting result..."
+  ./scripts/agent/report_result.sh "$RECORD_ID"
 done
