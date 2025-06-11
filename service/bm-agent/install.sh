@@ -31,6 +31,9 @@ sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/s
 echo "sudo systemctl daemon-reload"
 sudo systemctl daemon-reload
 
+echo "sudo systemctl stop bm-agent.service"
+sudo systemctl stop bm-agent.service
+
 echo "sudo systemctl enable bm-agent.service"
 sudo systemctl enable bm-agent.service
 
