@@ -1,24 +1,5 @@
 # bm-infra
 
-### Service account setup (draft) 
-
-```
-# create user
-sudo useradd -m -s /bin/bash bm-agent
-
-# give docker permission
-sudo usermod -aG docker bm-agent
-
-
-# delete 
-sudo userdel -r bm-agent
-
-# "login" to this user.
-sudo su - bm-agent
-
-
-```
-
 ### Machine configs.
 
 ```
@@ -59,6 +40,12 @@ GCS_BUCKET=vllm-cb-storage2
 GCP_QUEUE=vllm-bm-queue-v6e-8
 EOF
 
+```
+
+### Install BM-Agent
+
+```
+./service/bm-agent/install.sh 
 ```
 
 ### Create and Delete Detabase
@@ -175,8 +162,21 @@ sudo systemctl restart bm-agent.service
 
 sudo journalctl -u bm-agent
 sudo journalctl -u bm-agent -f
+
 sudo rm /etc/systemd/system/bm-agent.service
 
 sudo docker exec -it vllm-tpu tail -f /workspace/vllm_log.txt
 
+# create user
+sudo useradd -m -s /bin/bash bm-agent
+
+# give docker permission
+sudo usermod -aG docker bm-agent
+
+
+# delete 
+sudo userdel -r bm-agent
+
+# "login" to this user.
+sudo su - bm-agent
 ```
