@@ -36,6 +36,29 @@ sudo apt-get update && sudo apt-get install -y jq
 
 yes | gcloud auth configure-docker $GCP_REGION-docker.pkg.dev
 
+
+# v6e-1
+sudo tee -a /etc/environment > /dev/null <<EOF
+GCP_PROJECT_ID=cloud-tpu-inference-test
+GCP_INSTANCE_ID=vllm-bm-inst
+GCP_DATABASE_ID=vllm-bm-runs
+GCP_REGION=southamerica-west1
+GCP_INSTANCE_NAME=cuiq-infer-v6e-1-1
+GCS_BUCKET=vllm-cb-storage2
+GCP_QUEUE=vllm-bm-queue-v6e-1
+EOF
+
+# v6e-8
+sudo tee -a /etc/environment > /dev/null <<EOF
+GCP_PROJECT_ID=cloud-tpu-inference-test
+GCP_INSTANCE_ID=vllm-bm-inst
+GCP_DATABASE_ID=vllm-bm-runs
+GCP_REGION=southamerica-west1
+GCP_INSTANCE_NAME=cuiq-infer-v6e-8-1
+GCS_BUCKET=vllm-cb-storage2
+GCP_QUEUE=vllm-bm-queue-v6e-8
+EOF
+
 ```
 
 ### Create and Delete Detabase
