@@ -16,13 +16,16 @@ CREATE TABLE RunRecord (
     RunBy STRING(32),
     InputLen INT64 NOT NULL,
     OutputLen INT64 NOT NULL,
+    ExpectedETEL INT64,
     Throughput FLOAT64,
     MedianITL FLOAT64,
     MedianTPOT FLOAT64,
     MedianTTFT FLOAT64,
+    MedianETEL FLOAT64,
     P99ITL FLOAT64,
     P99TPOT FLOAT64,
     P99TTFT FLOAT64,
+    P99ETEL FLOAT64,
     LastUpdate TIMESTAMP OPTIONS (allow_commit_timestamp=true)
 ) PRIMARY KEY (RecordId);
 
@@ -46,6 +49,8 @@ CREATE INDEX IDX_RunRecord_Throughput ON RunRecord (Throughput);
 CREATE INDEX IDX_RunRecord_MedianITL ON RunRecord (MedianITL);
 CREATE INDEX IDX_RunRecord_MedianTPOT ON RunRecord (MedianTPOT);
 CREATE INDEX IDX_RunRecord_MedianTTFT ON RunRecord (MedianTTFT);
+CREATE INDEX IDX_RunRecord_MedianETEL ON RunRecord (MedianETEL);
 CREATE INDEX IDX_RunRecord_P99ITL ON RunRecord (P99ITL);
 CREATE INDEX IDX_RunRecord_P99TPOT ON RunRecord (P99TPOT);
 CREATE INDEX IDX_RunRecord_P99TTFT ON RunRecord (P99TTFT);
+CREATE INDEX IDX_RunRecord_P99ETEL ON RunRecord (P99ETEL);
