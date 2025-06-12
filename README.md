@@ -83,7 +83,7 @@ Create pubsub
 
 ```
 
-# create topic
+# create topic v6e-1
 gcloud pubsub topics create vllm-bm-queue-v6e-1 \
   --project="$GCP_PROJECT_ID"
 
@@ -93,8 +93,17 @@ gcloud pubsub subscriptions create vllm-bm-queue-v6e-1-agent \
   --topic="vllm-bm-queue-v6e-1" \
   --ack-deadline=600
 
+# create topic v6e-4
+gcloud pubsub topics create vllm-bm-queue-v6e-4 \
+  --project="$GCP_PROJECT_ID"
 
-# create topic
+# create agent subscription
+gcloud pubsub subscriptions create vllm-bm-queue-v6e-4-agent \
+  --project="$GCP_PROJECT_ID" \
+  --topic="vllm-bm-queue-v6e-4" \
+  --ack-deadline=600
+
+# create topic v6e-8
 gcloud pubsub topics create vllm-bm-queue-v6e-8 \
   --project="$GCP_PROJECT_ID"
 
