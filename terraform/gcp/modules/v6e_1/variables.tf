@@ -17,3 +17,21 @@ variable "region" {
 variable "project_id" {
   default = "cloud-tpu-inference-test"
 }
+
+variable "spanner_instance" {
+  default = "vllm-bm-inst"
+}
+
+variable "spanner_db" {
+  default = "vllm-bm-runs"
+}
+
+variable "gcs_bucket" {
+  default = "vllm-cb-storage2"
+}
+
+variable "hf_token" {
+  description = "Hugging Face API token"
+  type        = string
+  sensitive   = true
+}
