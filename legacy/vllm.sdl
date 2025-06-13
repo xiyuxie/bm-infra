@@ -1,0 +1,11 @@
+CREATE TABLE ModelMetrics (
+  RunTime TIMESTAMP NOT NULL,
+  ModelName STRING(16) NOT NULL,
+  RunType STRING(16) NOT NULL,
+  CodeHash STRING(128) NOT NULL,
+  Throughput FLOAT64,
+) PRIMARY KEY (RunTime, ModelName, RunType);
+
+CREATE INDEX ThroughputIndex ON ModelMetrics(Throughput);
+CREATE INDEX HahsIndex ON ModelMetrics(CodeHash);
+CREATE INDEX RunTyppeIndex ON ModelMetrics(RunType);
