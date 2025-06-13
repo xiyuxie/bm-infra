@@ -35,3 +35,9 @@ echo "./scripts/scheduler/build_image.sh $CODE_HASH"
 
 echo "./scripts/scheduler/schedule_run.sh $INPUT_CSV $CODE_HASH"
 ./scripts/scheduler/schedule_run.sh "$INPUT_CSV" "$CODE_HASH" "$JOB_REFERENCE" "$RUN_TYPE"
+
+echo "Runs created."
+echo "To get job status, run:"
+echo "./scripts/manager/get_status.sh $JOB_REFERENCE"
+echo "To restart failed job, run:"
+echo "./scripts/manager/reschedule_run.sh $JOB_REFERENCE"
