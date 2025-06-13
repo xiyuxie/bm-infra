@@ -7,7 +7,7 @@ grep -q "^GCP_DATABASE_ID=" /etc/environment || echo "GCP_DATABASE_ID=${spanner_
 grep -q "^GCP_REGION=" /etc/environment || echo "GCP_REGION=${region}" | sudo tee -a /etc/environment
 grep -q "^GCP_INSTANCE_NAME=" /etc/environment || echo "GCP_INSTANCE_NAME=${instance_name}" | sudo tee -a /etc/environment
 grep -q "^GCS_BUCKET=" /etc/environment || echo "GCS_BUCKET=${gcs_bucket}" | sudo tee -a /etc/environment
-grep -q "^GCP_QUEUE=" /etc/environment || echo "GCP_QUEUE=vllm-bm-queue-${accelerator_type}" | sudo tee -a /etc/environment
+grep -q "^GCP_QUEUE=" /etc/environment || echo "GCP_QUEUE=vllm-${purpose}-queue-${accelerator_type}" | sudo tee -a /etc/environment
 grep -q "^HF_TOKEN=" /etc/environment || echo "HF_TOKEN=${hf_token}" | sudo tee -a /etc/environment
 
 
@@ -21,9 +21,21 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 cp /root/.cargo/bin/minijinja-cli /usr/bin/minijinja-cli
 chmod 777 /usr/bin/minijinja-cli
 
-sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb
-sudo mkdir -p /mnt/disks/persist
-sudo mount -o discard,defaults /dev/sdb /mnt/disks/persist
+# Mount persistent disk
+if ! blkid /dev/nvme0n2; then
+  echo "Formatting /dev/nvme0n2 as ext4..."
+  mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/nvme0n2
+fi
+
+echo "mkdir -p /mnt/disks/persist" 
+mkdir -p /mnt/disks/persist
+
+echo "chmod 777 -R /mnt/disks/persist"
+chmod 777 -R /mnt/disks/persist
+
+echo "mount -o discard,defaults /dev/nvme0n2 /mnt/disks/persist"
+mount -o discard,defaults /dev/nvme0n2 /mnt/disks/persist
+chmod 777 -R /mnt/disks/persist
 
 jq ". + {\"data-root\": \"/mnt/disks/persist\"}" /etc/docker/daemon.json > /tmp/daemon.json.tmp && mv /tmp/daemon.json.tmp /etc/docker/daemon.json
 systemctl stop docker

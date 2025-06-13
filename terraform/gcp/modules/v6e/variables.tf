@@ -38,3 +38,13 @@ variable "startup_script_path" {
   type        = string
   description = "Path to shared startup script template"
 }
+
+variable "accelerator_type" {
+  type        = string
+  description = "Path to shared startup script template"
+}
+
+variable "purpose" {
+  type        = string
+  description = "Path to shared startup script template"
+}

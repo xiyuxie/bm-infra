@@ -10,6 +10,10 @@ variable "zone" {
     default = "southamerica-west1-a"
 }
 
+variable "purpose" {
+  default = "bm"
+}
+
 variable "spanner_instance" {
   default = "vllm-bm-inst"
 }

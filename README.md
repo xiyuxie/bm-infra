@@ -74,6 +74,10 @@ pushd terraform/gcp
 
 terraform init
 
+terraform plan
+
+terraform apply -var="hf_token={hf_token_value}"
+
 popd
 ```
 
@@ -233,4 +237,18 @@ buid a local image with local changes
 # 2. make the changes.
 # 3. do git commit.
 # run the script scripts/build_and_push_local_image.sh
+```
+
+### Create Secret for HF_TOKEN
+
+```
+gcloud secrets create bm-agent-hf-token \
+  --replication-policy="automatic"
+  --project=$GCP_PROJECT_ID
+
+echo -n "hf_your_actual_token" | \
+gcloud secrets versions add bm-agent-hf-token \
+  --data-file=- \
+  --project=$GCP_PROJECT_ID
+
 ```
