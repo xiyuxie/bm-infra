@@ -1,33 +1,31 @@
 variable "tpu_count" {
   type        = number
-  description = "Number of TPU VMs to create"
-  default     = 1
+  description = "Number of TPU VMs to create"  
 }
 
 variable "tpu_zone" {
   type        = string
   description = "Zone to deploy TPU VMs and disks"
-  default     = "southamerica-west1-a"
 }
 
 variable "region" {
-    default = "southamerica-west1"
+    type        = string
 }
 
 variable "project_id" {
-  default = "cloud-tpu-inference-test"
+  type        = string
 }
 
 variable "spanner_instance" {
-  default = "vllm-bm-inst"
+  type        = string
 }
 
 variable "spanner_db" {
-  default = "vllm-bm-runs"
+  type        = string
 }
 
 variable "gcs_bucket" {
-  default = "vllm-cb-storage2"
+  type        = string
 }
 
 variable "hf_token" {

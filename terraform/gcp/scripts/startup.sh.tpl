@@ -1,14 +1,15 @@
 #!/bin/bash     
 
 # Set env vars system-wide
-echo "GCP_PROJECT_ID=${project_id}" >> /etc/environment
-echo "GCP_INSTANCE_ID=${spanner_instance}" >> /etc/environment
-echo "GCP_DATABASE_ID=${spanner_db}" >> /etc/environment
-echo "GCP_REGION=${region}" >> /etc/environment
-echo "GCP_INSTANCE_NAME=${instance_name}" >> /etc/environment
-echo "GCS_BUCKET=${gcs_bucket}" >> /etc/environment      
-echo "GCP_QUEUE=vllm-bm-queue-${accelerator_type}" >> /etc/environment
-echo "HF_TOKEN=${hf_token}" >> /etc/environment
+grep -q "^GCP_PROJECT_ID=" /etc/environment || echo "GCP_PROJECT_ID=${project_id}" | sudo tee -a /etc/environment
+grep -q "^GCP_INSTANCE_ID=" /etc/environment || echo "GCP_INSTANCE_ID=${spanner_instance}" | sudo tee -a /etc/environment
+grep -q "^GCP_DATABASE_ID=" /etc/environment || echo "GCP_DATABASE_ID=${spanner_db}" | sudo tee -a /etc/environment
+grep -q "^GCP_REGION=" /etc/environment || echo "GCP_REGION=${region}" | sudo tee -a /etc/environment
+grep -q "^GCP_INSTANCE_NAME=" /etc/environment || echo "GCP_INSTANCE_NAME=${instance_name}" | sudo tee -a /etc/environment
+grep -q "^GCS_BUCKET=" /etc/environment || echo "GCS_BUCKET=${gcs_bucket}" | sudo tee -a /etc/environment
+grep -q "^GCP_QUEUE=" /etc/environment || echo "GCP_QUEUE=vllm-bm-queue-${accelerator_type}" | sudo tee -a /etc/environment
+grep -q "^HF_TOKEN=" /etc/environment || echo "HF_TOKEN=${hf_token}" | sudo tee -a /etc/environment
+
 
 apt-get update
 apt-get install -y curl build-essential jq
