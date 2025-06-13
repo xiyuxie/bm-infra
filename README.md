@@ -146,6 +146,13 @@ Create a job
 ./scripts/scheduler/create_job.sh ./configs/all_models_v6e_1.csv da9b523ce1fd5c27bfd18921ba0388bf2e8e4618 all_v6e1
 ```
 
+Get Job status
+
+```
+./scripts/manager/get_status.sh [JOB_REFERENCE]
+
+```
+
 Insert runs to database
 
 ```
