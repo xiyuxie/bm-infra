@@ -1,12 +1,12 @@
 [Unit]
-Description=Benchmark Agent Service
+Description=Benchmark Scheduler Service
 After=network.target
 
 [Service]
 Type=simple
-User=bm-agent
-WorkingDirectory=/home/bm-agent/bm-infra
-ExecStart=/home/bm-agent/bm-infra/scripts/agent/agent_run.sh
+User=bm-scheduler
+WorkingDirectory=/home/bm-scheduler/bm-infra
+ExecStart=/home/bm-scheduler/bm-infra/scripts/scheduler/hourly_run.sh
 Restart=on-failure
 RestartSec=5s
 EnvironmentFile=/etc/environment
