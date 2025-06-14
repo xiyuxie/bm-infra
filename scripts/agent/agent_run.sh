@@ -1,6 +1,11 @@
 #!/bin/bash
 
 # 10 seconds
+
+set -a
+source /etc/environment
+set +a
+
 QUEUE_WAITING=5
 
 SUBSCRIPTION_NAME="$GCP_QUEUE-agent"
