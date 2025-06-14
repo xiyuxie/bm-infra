@@ -1,0 +1,4 @@
+ALTER TABLE ModelMetrics ADD COLUMN Tag STRING(64);
+ALTER TABLE ModelMetrics ADD COLUMN VM STRING(64);
+CREATE INDEX TagIndex ON ModelMetrics(Tag);
+CREATE INDEX VMIndex ON ModelMetrics(VM);
