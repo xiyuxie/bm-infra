@@ -42,6 +42,12 @@ echo "lanching vllm..."
 echo "logging to $VLLM_LOG"
 echo
 
+EXTRA_ARGS=""
+if [[ "$MODEL" == "google/gemma-3-27b-it" ]]; then
+  echo "google/gemma-3-27b-it"
+  EXTRA_ARGS="--limit-mm-per-prompt image=0"
+fi
+
 VLLM_USE_V1=1 vllm serve $MODEL \
  --seed 42 \
  --disable-log-requests \
@@ -50,7 +56,7 @@ VLLM_USE_V1=1 vllm serve $MODEL \
  --tensor-parallel-size $TENSOR_PARALLEL_SIZE \
  --no-enable-prefix-caching \
  --download_dir $DOWNLOAD_DIR \
- --max-model-len $MAX_MODEL_LEN > "$VLLM_LOG" 2>&1 &
+ --max-model-len $MAX_MODEL_LEN $EXTRA_ARGS> "$VLLM_LOG" 2>&1 &
 
 
 echo "wait for 20 minutes.."
