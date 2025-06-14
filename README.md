@@ -215,6 +215,7 @@ sudo journalctl -u bm-agent -n 300 -f
 
 sudo systemctl status bm-scheduler.service
 sudo systemctl restart bm-scheduler.service
+sudo systemctl stop bm-scheduler.service
 
 sudo journalctl -u bm-scheduler -n 300 -f
 
