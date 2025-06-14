@@ -37,7 +37,7 @@ do
     continue
   fi
 
-  echo "Inserting RecordId: $RECORD_ID"
+  echo "Inserting Run: $RECORD_ID"
   gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
     --instance="$GCP_INSTANCE_ID" \
     --project="$GCP_PROJECT_ID" \
@@ -57,5 +57,7 @@ do
   # Publish the message
   gcloud pubsub topics publish $QUEUE_TOPIC \
     --project="$GCP_PROJECT_ID" \
-    --message="$MESSAGE_BODY"
+    --message="$MESSAGE_BODY" > /dev/null
+
+  echo "$RECORD_ID scheduled."
 done
