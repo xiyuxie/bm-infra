@@ -46,7 +46,7 @@ pip install matplotlib
 echo "create source and image"
 echo
 
-python draw.py hourly $HOME/hourly.png llama-8b qwen-2b llama-70b llama-70b-vm llama-8b-vm qwen-2b-vm 
+python draw.py hourly $HOME/hourly.png llama-8b qwen-2b llama-70b llama-70b-vm llama-8b-vm qwen-2b-vm llama3-8b-w8a8 llama3-8b-w8a8vm llama-8b-a100-vm llama3-70b-w8a8 llama370bw8a8vm gemma3-27b gemma3-27b-vm
 echo gsutil cp hourly.png* gs://$GCS_BUCKET
 gsutil cp hourly.png* gs://$GCS_BUCKET
 echo gsutil cp hourly.png* gs://$GCS_BUCKET2

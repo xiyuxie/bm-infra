@@ -151,7 +151,7 @@ echo
 
 echo "source $CONDA/bin/activate vllm"
 echo
-source $CONDA/bin/activate vllmß
+source $CONDA/bin/activate vllm
 
 echo "pip install google-cloud-spanner"
 echo 

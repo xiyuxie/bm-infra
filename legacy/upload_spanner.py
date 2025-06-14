@@ -75,8 +75,11 @@ if __name__ == "__main__":
 
     write_back = configs[:]
     for ii, config in enumerate(configs):
-        rows = process_one_file(config[0], config[1], config[2], config[3])
-        write_back[ii] = (config[0], config[1], config[2], rows)
+        try:
+            rows = process_one_file(config[0], config[1], config[2], config[3])
+            write_back[ii] = (config[0], config[1], config[2], rows)
+        except Exception as e:
+            print(f"Error processing file {config[0]}: {e}")
 
 
     with open(config_path, mode='w', newline='') as file:

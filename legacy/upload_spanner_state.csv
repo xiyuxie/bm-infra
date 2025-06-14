@@ -1,2 +1,12 @@
-/home/cuiq/llama8b_table.txt,hourly,llama-8b,17
-/home/cuiq/qwen2b_table.txt,hourly,qwen-2b,17
+/home/cuiq_google_com/llama8b_table.txt,hourly,llama-8b,816
+/home/cuiq_google_com/llama8bvm_table.txt,hourly,llama-8b-vm,817
+/home/cuiq_google_com/qwen2b_table.txt,hourly,qwen-2b,814
+/home/cuiq_google_com/qwen2bvm_table.txt,hourly,qwen-2b-vm,818
+/home/cuiq_google_com/llama3-8b-w8a8_table.txt,hourly,llama3-8b-w8a8,4
+/home/cuiq_google_com/llama3-8b-w8a8vm_table.txt,hourly,llama3-8b-w8a8vm,0
+/home/cuiq_google_com/llama70bvm_table.txt,hourly,llama-70b-vm,574
+/home/cuiq_google_com/llama70b_table.txt,hourly,llama-70b,68
+/home/cuiq_google_com/llama3-70b-w8a8vm_table.txt,hourly,llama370bw8a8vm,0
+/home/cuiq_google_com/llama3-70b-w8a8_table.txt,hourly,llama3-70b-w8a8,0
+/home/cuiq_google_com/gemma3-27bvm_table.txt,hourly,gemma3-27b-vm,0
+/home/cuiq_google_com/gemma3-27b_table.txt,hourly,gemma3-27b,0
