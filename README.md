@@ -213,6 +213,11 @@ sudo journalctl -u bm-agent
 sudo journalctl -u bm-agent -f
 sudo journalctl -u bm-agent -n 300 -f
 
+sudo systemctl status bm-scheduler.service
+sudo systemctl restart bm-scheduler.service
+
+sudo journalctl -u bm-scheduler -n 300 -f
+
 sudo rm /etc/systemd/system/bm-agent.service
 
 sudo docker exec -it vllm-tpu tail -f /workspace/vllm_log.txt

@@ -35,4 +35,4 @@ echo "sudo systemctl stop bm-scheduler.service"
 sudo systemctl stop bm-scheduler.service
 
 # add to crontab
-sudo crontab -l | { cat; echo "@hourly /bin/systemctl restart bm-scheduler.service"; } | sudo crontab -
+(crontab -l 2>/dev/null | grep -v 'bm-scheduler.service'; echo "@hourly /bin/systemctl restart bm-scheduler.service") | crontab -
