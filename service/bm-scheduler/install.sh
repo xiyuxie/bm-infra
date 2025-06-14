@@ -34,8 +34,5 @@ sudo systemctl daemon-reload
 echo "sudo systemctl stop bm-scheduler.service"
 sudo systemctl stop bm-scheduler.service
 
-echo "sudo systemctl enable bm-scheduler.service"
-sudo systemctl enable bm-scheduler.service
-
-echo "sudo systemctl start bm-scheduler.service"
-sudo systemctl start bm-scheduler.service
+# add to crontab
+sudo crontab -l | { cat; echo "@hourly /bin/systemctl restart bm-scheduler.service"; } | sudo crontab -
