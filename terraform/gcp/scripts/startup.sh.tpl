@@ -8,7 +8,9 @@ grep -q "^GCP_REGION=" /etc/environment || echo "GCP_REGION=${region}" | sudo te
 grep -q "^GCP_INSTANCE_NAME=" /etc/environment || echo "GCP_INSTANCE_NAME=${instance_name}" | sudo tee -a /etc/environment
 grep -q "^GCS_BUCKET=" /etc/environment || echo "GCS_BUCKET=${gcs_bucket}" | sudo tee -a /etc/environment
 grep -q "^GCP_QUEUE=" /etc/environment || echo "GCP_QUEUE=vllm-${purpose}-queue-${accelerator_type}" | sudo tee -a /etc/environment
-grep -q "^HF_TOKEN=" /etc/environment || echo "HF_TOKEN=${hf_token}" | sudo tee -a /etc/environment
+HF_TOKEN=$(gcloud secrets versions access latest --secret=bm-agent-hf-token)
+grep -q "^HF_TOKEN=" /etc/environment || echo "HF_TOKEN=${HF_TOKEN}" | sudo tee -a /etc/environment
+
 
 
 apt-get update

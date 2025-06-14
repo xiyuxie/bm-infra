@@ -37,7 +37,6 @@ resource "google_tpu_v2_vm" "tpu_v6" {
       instance_name    = "vllm-tpu-${var.accelerator_type}-${var.purpose}-${count.index}"
       accelerator_type = "${var.accelerator_type}"
       gcs_bucket       = var.gcs_bucket
-      hf_token         = var.hf_token
     })
   }
 

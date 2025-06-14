@@ -42,7 +42,6 @@ module "v6e-1" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  hf_token             = var.hf_token  
   startup_script_path = "${path.module}/scripts/startup.sh.tpl"
 }
 
@@ -60,7 +59,6 @@ module "v6e-4" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  hf_token             = var.hf_token  
   startup_script_path = "${path.module}/scripts/startup.sh.tpl"
 }
 
@@ -78,6 +76,5 @@ module "v6e-8" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  hf_token             = var.hf_token  
   startup_script_path = "${path.module}/scripts/startup.sh.tpl"
 }

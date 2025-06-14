@@ -25,9 +25,3 @@ variable "spanner_db" {
 variable "gcs_bucket" {
   default = "vllm-cb-storage2"
 }
-
-variable "hf_token" {
-  description = "Hugging Face API token"
-  type        = string
-  sensitive   = true
-}

@@ -28,12 +28,6 @@ variable "gcs_bucket" {
   type        = string
 }
 
-variable "hf_token" {
-  description = "Hugging Face API token"
-  type        = string
-  sensitive   = true
-}
-
 variable "startup_script_path" {
   type        = string
   description = "Path to shared startup script template"
