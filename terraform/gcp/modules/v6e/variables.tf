@@ -42,3 +42,8 @@ variable "purpose" {
   type        = string
   description = "Path to shared startup script template"
 }
+
+variable "mnt_disk_gb" {
+  type        = number
+  default     = 512
+}

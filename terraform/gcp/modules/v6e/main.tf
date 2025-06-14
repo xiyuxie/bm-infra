@@ -3,7 +3,7 @@ resource "google_compute_disk" "large_disk" {
   count    = var.tpu_count
 
   name = "tpu-${var.purpose}-disk-${var.accelerator_type}-${var.tpu_zone}-${count.index}"
-  size = 512
+  size = var.mnt_disk_gb
   type = "hyperdisk-balanced"
   zone = var.tpu_zone
 }
