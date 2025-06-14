@@ -259,3 +259,14 @@ gcloud secrets versions add bm-agent-hf-token \
   --project=$GCP_PROJECT_ID
 
 ```
+
+### Disk
+
+after resizing the disk
+
+run this to make sure system use it.
+
+```
+sudo resize2fs /dev/nvme0n2
+
+```

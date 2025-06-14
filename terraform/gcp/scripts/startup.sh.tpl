@@ -39,6 +39,12 @@ echo "mount -o discard,defaults /dev/nvme0n2 /mnt/disks/persist"
 mount -o discard,defaults /dev/nvme0n2 /mnt/disks/persist
 chmod 777 -R /mnt/disks/persist
 
+# resize in case the disk is larger.
+if mountpoint -q /mnt/disks/persist && blkid /dev/nvme0n2 | grep -q ext4; then
+  echo "Resizing ext4 filesystem on /dev/nvme0n2..."
+  sudo resize2fs /dev/nvme0n2
+fi
+
 jq ". + {\"data-root\": \"/mnt/disks/persist\"}" /etc/docker/daemon.json > /tmp/daemon.json.tmp && mv /tmp/daemon.json.tmp /etc/docker/daemon.json
 systemctl stop docker
 systemctl daemon-reload
