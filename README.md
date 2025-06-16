@@ -7,12 +7,11 @@ export GCP_PROJECT_ID=cloud-tpu-inference-test
 export GCP_INSTANCE_ID=vllm-bm-inst
 export GCP_DATABASE_ID=vllm-bm-runs
 export GCP_REGION=southamerica-west1
-export GCP_INSTANCE_NAME=cuiq-infer-v6e-1-1
 export GCS_BUCKET=vllm-cb-storage2
-export GCP_QUEUE=vllm-bm-queue-v6e-1
 
+export GCP_QUEUE=vllm-bm-queue-{v6e-1, v6e-4, v6e-6}
 export HF_TOKEN=<>
-
+export GCP_INSTANCE_NAME=<your instance name>
 sudo apt-get update && sudo apt-get install -y jq
 
 yes | gcloud auth configure-docker $GCP_REGION-docker.pkg.dev
@@ -76,7 +75,7 @@ terraform init
 
 terraform plan
 
-terraform apply -var="hf_token={hf_token_value}"
+terraform apply
 
 popd
 ```
@@ -109,6 +108,43 @@ gcloud spanner databases delete $GCP_DATABASE_ID \
  --instance=$GCP_INSTANCE_ID \
  --project=$GCP_PROJECT_ID
 ```
+
+### Create Looker Studio Report
+
+1   Create a "looker friendly" view like this(ok to be different): 
+
+```
+
+CREATE OR REPLACE VIEW
+  `HourlyRun` SQL SECURITY INVOKER AS
+SELECT
+  RunRecord.RecordId,
+  RunRecord.JobReference,
+  RunRecord.Model,
+  RunRecord.CodeHash,
+  RunRecord.Status,
+  RunRecord.Device,
+  IFNULL(RunRecord.Throughput, 0) AS Throughput, 
+  PARSE_TIMESTAMP('%Y%m%d_%H%M%S', RunRecord.JobReference, 'America/Los_Angeles') AS JobReferenceTime
+FROM
+  RunRecord
+WHERE
+  RunRecord.RunType = 'HOURLY'
+  AND RunRecord.Status IN ('COMPLETED',
+    'FAILED')
+  AND RunRecord.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+ORDER BY
+  RunRecord.JobReference;
+
+```
+
+2.  https://lookerstudio.google.com/
+3.  Create a datasource and use Cloud Spanner as Data Source and use the view.
+4.  On the UI, choose column you care about and add field if needed, for example, a link to log, etc.
+5.  Create a report on it... a lot of manual work.
+
+
+
 
 ### Create the Pub/sub queue.
 
