@@ -54,12 +54,26 @@ while true; do
     continue
   fi
   
-  # Update status to RUNNING
-  echo "Setting record $RECORD_ID status to RUNNING..."
+  # Query TryCount as JSON
+  echo "Query $RECORD_ID..."
+  TRY_COUNT_JSON=$(gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
+    --project="$GCP_PROJECT_ID" \
+    --instance="$GCP_INSTANCE_ID" \
+    --format=json \
+    --sql="SELECT TryCount FROM RunRecord WHERE RecordId='$RECORD_ID'")
+
+  # Parse TryCount using jq, convert to number, default to 0 if missing
+  TRY_COUNT=$(echo "$TRY_COUNT_JSON" | jq -r '.rows[0][0] | tonumber // 0')
+
+  # Increment TryCount
+  NEW_TRY_COUNT=$((TRY_COUNT + 1))
+
+  # Update record
+  echo "Updating record $RECORD_ID: Status=RUNNING, TryCount=$NEW_TRY_COUNT, RunBy=$GCP_INSTANCE_NAME..."
   gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
     --project="$GCP_PROJECT_ID" \
     --instance="$GCP_INSTANCE_ID" \
-    --sql="UPDATE RunRecord SET Status='RUNNING', LastUpdate=CURRENT_TIMESTAMP() WHERE RecordId='$RECORD_ID'"
+    --sql="UPDATE RunRecord SET Status='RUNNING', LastUpdate=CURRENT_TIMESTAMP(), TryCount=$NEW_TRY_COUNT, RunBy='${GCP_INSTANCE_NAME}' WHERE RecordId='$RECORD_ID'"
 
   gcloud pubsub subscriptions ack "$SUBSCRIPTION_NAME" \
     --project="$GCP_PROJECT_ID" \
