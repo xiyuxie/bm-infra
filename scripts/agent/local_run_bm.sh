@@ -35,6 +35,7 @@ if ! conda info --envs | awk '{print $1}' | grep -Fxq "$ENV_NAME"; then
 
   # Activate and install dependencies
   echo "Activating and installing vllm + dependencies..."
+  eval "$(conda shell.bash hook)"
   conda activate "$ENV_NAME"
   pushd "$VLLM_FOLDER"
   VLLM_USE_PRECOMPILED=1 pip install --editable .
@@ -42,6 +43,7 @@ if ! conda info --envs | awk '{print $1}' | grep -Fxq "$ENV_NAME"; then
   popd
 else
   echo "Conda environment '$ENV_NAME' exists. Activating..."
+  eval "$(conda shell.bash hook)"
   conda activate "$ENV_NAME"
 fi
 
