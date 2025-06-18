@@ -28,8 +28,13 @@ fi
 #
 # Run job in docker
 #
-echo "Running job in docker..."
-./scripts/agent/docker_run_bm.sh "artifacts/${RECORD_ID}.env"
+if [[ "${LOCAL_RUN_bm:-}" == "1" ]]; then
+  echo "Running locally..."
+  ./scripts/agent/local_run_bm.sh "artifacts/${RECORD_ID}.env"
+else
+  echo "Running job in docker..."
+  ./scripts/agent/docker_run_bm.sh "artifacts/${RECORD_ID}.env"
+fi
 if [ $? -ne 0 ]; then
   echo "Error running job in docker."
   exit 1

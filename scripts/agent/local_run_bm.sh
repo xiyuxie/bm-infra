@@ -1,37 +1,62 @@
 #!/bin/bash
 
+# Usage: ./check_conda_env.sh env_name
 if [ ! -f "$1" ]; then
   echo "Error: The env file '$1' does not exist."
   exit 1  # Exit the script with a non-zero status to indicate an error
 fi
 
 ENV_FILE=$1
+PYTHON_VERSION="3.12"
+VLLM_FOLDER="../vllm"
+VLLM_REPO="https://github.com/vllm-project/vllm"
 
 # For testing on local vm, use `set -a` to export all variables
 source /etc/environment
 source $ENV_FILE
 
-remove_docker_container() { 
-    docker rm -f tpu-test || true; 
-    docker rm -f vllm-tpu || true;
-    docker rm -f $CONTAINER_NAME || true;
+ENV_NAME="vllm-bm-$CODE_HASH"
+
+# Clone or reuse VLLM folder
+if [ ! -d "$VLLM_FOLDER" ] || [ -z "$(ls -A "$VLLM_FOLDER")" ]; then
+  echo "Cloning VLLM repo into $VLLM_FOLDER..."
+  git clone "$VLLM_REPO" "$VLLM_FOLDER"
+fi
+
+pushd "$VLLM_FOLDER"
+git fetch origin
+git reset --hard "$CODE_HASH"
+popd
+
+# Check if conda env exists
+if ! conda info --envs | awk '{print $1}' | grep -Fxq "$ENV_NAME"; then
+  echo "Creating conda environment '$ENV_NAME'..."
+  conda create -y -n "$ENV_NAME" python="$PYTHON_VERSION"
+
+  # Activate and install dependencies
+  echo "Activating and installing vllm + dependencies..."
+  conda activate "$ENV_NAME"
+  pushd "$VLLM_FOLDER"
+  VLLM_USE_PRECOMPILED=1 pip install --editable .
+  pip install pandas datasets
+  popd
+else
+  echo "Conda environment '$ENV_NAME' exists. Activating..."
+  conda activate "$ENV_NAME"
+fi
+
+clean_up() { 
+   pkill -f vllm
+   ./scripts/agent/clean_old_vllm_envs.sh
 }
 
 trap remove_docker_container EXIT
 
-# Remove the container that might not be cleaned up in the previous run.
-remove_docker_container
+# Actual run scripts
+TMP_WORKSPACE=/tmp/workspace
 
-image_tag=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$CODE_HASH
-
-echo "image tag: $image_tag"
-
-docker pull $image_tag
-
-if [ $? -ne 0 ]; then
-  echo "Failed to pull the Docker image: $image_tag"
-  exit 1
-fi
+rm -rf $TMP_WORKSPACE
+mkdir -p $TMP_WORKSPACE
 
 LOG_ROOT=$(mktemp -d)
 REMOTE_LOG_ROOT="gs://$GCS_BUCKET/job_logs/$RECORD_ID/"
@@ -50,46 +75,33 @@ if [ ! -d "$DOWNLOAD_DIR" ]; then
     exit 1
 fi
 
-if ! mountpoint -q "$DOWNLOAD_DIR"; then
-    echo "Error: $DOWNLOAD_DIR exists but is not a mounted directory."
-    exit 1
-fi
+# skip the checking now
+# if ! mountpoint -q "$DOWNLOAD_DIR"; then
+#     echo "Error: $DOWNLOAD_DIR exists but is not a mounted directory."
+#     exit 1
+# fi
 
 echo "Run model $MODEL"
 echo
 
-echo "starting docker...$CONTAINER_NAME"
-echo    
-docker run \
- -v $DOWNLOAD_DIR:$DOWNLOAD_DIR \
- --env-file $ENV_FILE \
- -e HF_TOKEN="$HF_TOKEN" \
- -e TARGET_COMMIT=$CODE_HASH \
- -e MODEL=$MODEL \
- -e WORKSPACE=/workspace \
- --name $CONTAINER_NAME \
- -d \
- --privileged \
- --network host \
- -v /dev/shm:/dev/shm \
- $image_tag tail -f /dev/null
-
 echo "copy script run_bm.sh to container..."
-docker cp scripts/agent/run_bm.sh "$CONTAINER_NAME:/workspace/vllm/run_bm.sh"
+cp scripts/agent/run_bm.sh "$VLLM_FOLDER/run_bm.sh"
 
 echo "grant chmod +x"
 echo
-docker exec "$CONTAINER_NAME" chmod +x "/workspace/vllm/run_bm.sh"
+chmod +x $VLLM_FOLDER/run_bm.sh
 
+pushd $VLLM_FOLDER
 echo "run script..."
 echo
-docker exec "$CONTAINER_NAME" /bin/bash -c "./run_bm.sh"
+WORKSPACE=$TMP_WORKSPACE ./run_bm.sh
+popd
 
 echo "copy result back..."
 VLLM_LOG="$LOG_ROOT/$TEST_NAME"_vllm_log.txt
 BM_LOG="$LOG_ROOT/$TEST_NAME"_bm_log.txt
-docker cp "$CONTAINER_NAME:/workspace/vllm_log.txt" "$VLLM_LOG" 
-docker cp "$CONTAINER_NAME:/workspace/bm_log.txt" "$BM_LOG"
+cp "$TMP_WORKSPACE/vllm_log.txt" "$VLLM_LOG" 
+cp "$TMP_WORKSPACE/bm_log.txt" "$BM_LOG"
 
 throughput=$(grep "Request throughput (req/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
 echo "throughput for $TEST_NAME at $CODE_HASH: $throughput"
