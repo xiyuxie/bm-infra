@@ -13,7 +13,10 @@ VLLM_REPO="https://github.com/vllm-project/vllm"
 
 # For testing on local vm, use `set -a` to export all variables
 source /etc/environment
+
+set -a
 source $ENV_FILE
+set +a
 
 ENV_NAME="vllm-bm-$CODE_HASH"
 
@@ -96,7 +99,11 @@ chmod +x $VLLM_FOLDER/run_bm.sh
 pushd $VLLM_FOLDER
 echo "run script..."
 echo
-WORKSPACE=$TMP_WORKSPACE ./run_bm.sh
+WORKSPACE=$TMP_WORKSPACE \
+ HF_TOKEN="$HF_TOKEN" \
+ TARGET_COMMIT=$CODE_HASH \
+ MODEL=$MODEL \
+ ./run_bm.sh
 popd
 
 echo "copy result back..."
