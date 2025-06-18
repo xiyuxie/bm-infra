@@ -25,7 +25,7 @@ gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
   --instance="$GCP_INSTANCE_ID" \
   --project="$GCP_PROJECT_ID" \
   --sql="SELECT RecordId, Model, CodeHash, MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen, InputLen, OutputLen FROM RunRecord WHERE RecordId = '$RECORD_ID';" | \
-  awk 'NR==1 {
+  gawk 'NR==1 {
     for (i=1; i<=NF; i++) {
       # Insert underscore before uppercase letters preceded by a lowercase letter
       # Then convert to uppercase
