@@ -106,6 +106,9 @@ Create a job
 ./scripts/scheduler/create_job.sh <INPUT_CSV> [CODE_HASH] [JOB_REFERENCE] [RUN_TYPE]
 ./scripts/scheduler/create_job.sh ./configs/case1.csv
 ./scripts/scheduler/create_job.sh ./configs/all_models_v6e_1.csv da9b523ce1fd5c27bfd18921ba0388bf2e8e4618 all_v6e1
+
+# to skip image building and pushing, use SKIP_BUILD_IMAGE=1
+SKIP_BUILD_IMAGE=1 ./scripts/scheduler/create_job.sh ./configs/all_models_v6e_1.csv da9b523ce1fd5c27bfd18921ba0388bf2e8e4618 all_v6e1
 ```
 
 Get Job status

@@ -19,19 +19,22 @@ mkdir -p artifacts/
 # Clone vllm repo
 git clone https://github.com/vllm-project/vllm.git artifacts/vllm
 
-pushd artifacts/vllm
+if [[ "${SKIP_BUILD_IMAGE:-0}" != "1" ]]; then
+  pushd artifacts/vllm
 
-if [[ -n "$CODE_HASH" ]]; then
-    echo "git reset --hard $CODE_HASH"
-    git reset --hard "$CODE_HASH"
+  if [[ -n "$CODE_HASH" ]]; then
+      echo "git reset --hard $CODE_HASH"
+      git reset --hard "$CODE_HASH"
+  fi
+
+  # Always get the actual commit hash after clone/reset
+  CODE_HASH=$(git rev-parse HEAD)
+  popd
+  echo "./scripts/scheduler/build_image.sh $CODE_HASH"
+  ./scripts/scheduler/build_image.sh "$CODE_HASH"
+else
+  echo "Skipping build image"
 fi
-
-# Always get the actual commit hash after clone/reset
-CODE_HASH=$(git rev-parse HEAD)
-popd
-
-echo "./scripts/scheduler/build_image.sh $CODE_HASH"
-./scripts/scheduler/build_image.sh "$CODE_HASH"
 
 echo "./scripts/scheduler/schedule_run.sh $INPUT_CSV $CODE_HASH"
 ./scripts/scheduler/schedule_run.sh "$INPUT_CSV" "$CODE_HASH" "$JOB_REFERENCE" "$RUN_TYPE"
