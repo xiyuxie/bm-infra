@@ -10,9 +10,6 @@ QUEUE_WAITING=5
 
 SUBSCRIPTION_NAME="$GCP_QUEUE-agent"
 
-echo "git pull"
-git pull
-
 while true; do
   echo "Polling for message..."
 
@@ -91,4 +88,7 @@ while true; do
   #
   echo "Reporting result..."
   ./scripts/agent/report_result.sh "$RECORD_ID"
+
+  echo "./scripts/cleanup_docker.sh"
+  ./scripts/cleanup_docker.sh
 done
