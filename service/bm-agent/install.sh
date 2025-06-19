@@ -25,6 +25,46 @@ git clone https://github.com/QiliangCui/bm-infra.git
 
 EOF
 
+if [[ "${LOCAL_RUN_bm:-}" == "1" ]]; then  
+  echo "Installing Miniconda for bm-agent user..."
+
+  sudo -u bm-agent -i bash <<'EOF'
+  set -euo pipefail
+
+  # Miniconda version and install directory
+  MINICONDA_VERSION=latest  # adjust if needed
+  MINICONDA_DIR="$HOME/miniconda3"
+  MINICONDA_SCRIPT="Miniconda3-$MINICONDA_VERSION-Linux-x86_64.sh"
+  MINICONDA_URL="https://repo.anaconda.com/miniconda/$MINICONDA_SCRIPT"
+
+  # Download Miniconda installer if not exists
+  if [ ! -f "$HOME/$MINICONDA_SCRIPT" ]; then
+    echo "Downloading Miniconda installer..."
+    curl -fsSL "$MINICONDA_URL" -o "$HOME/$MINICONDA_SCRIPT"
+  fi
+
+  # Install Miniconda silently if not installed
+  if [ ! -d "$MINICONDA_DIR" ]; then
+    echo "Installing Miniconda to $MINICONDA_DIR..."
+    bash "$HOME/$MINICONDA_SCRIPT" -b -p "$MINICONDA_DIR"
+  fi
+
+  # Initialize conda for bash shell
+  eval "$($MINICONDA_DIR/bin/conda shell.bash hook)" || true
+
+  # Add conda init to .bashrc if not already there
+  if ! grep -q "conda initialize" "$HOME/.bashrc"; then
+    echo "Adding conda initialize to .bashrc..."
+    "$MINICONDA_DIR/bin/conda" init bash
+  fi
+
+  echo "Miniconda installation complete."
+
+EOF
+else
+  echo "Skip conda installation..."  
+fi
+
 echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
 sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
 
