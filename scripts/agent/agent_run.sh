@@ -10,20 +10,14 @@ QUEUE_WAITING=5
 
 SUBSCRIPTION_NAME="$GCP_QUEUE-agent"
 
-should_exit = False
-
-def handle_sigterm(signum, frame):
-    global should_exit
-    print("SIGTERM received. Will exit soon.")
-    should_exit = True
-
-# Register the signal handler
-signal.signal(signal.SIGTERM, handle_sigterm)
+# Trap SIGTERM and set flag
+trap 'echo "Received SIGTERM."; should_exit=1' SIGTERM
 
 while true; do
-  if should_exit:
-    print("Exiting gracefully after step2.")
+  if [[ "$should_exit" -eq 1 ]]; then
+    echo "Exiting on SIGTERM."
     break
+  fi
 
   echo "Polling for message..."
 
