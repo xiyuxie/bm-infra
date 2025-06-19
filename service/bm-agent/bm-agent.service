@@ -1,6 +1,8 @@
 [Unit]
 Description=Benchmark Agent Service
 After=network.target
+Requires=mnt-disks-persist.mount
+After=mnt-disks-persist.mount
 
 [Service]
 Type=simple
