@@ -12,6 +12,8 @@ RestartSec=5s
 EnvironmentFile=/etc/environment
 StandardOutput=journal
 StandardError=journal
+KillSignal=SIGTERM
+TimeoutStopSec=1800
 
 [Install]
 WantedBy=multi-user.target

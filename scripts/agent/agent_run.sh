@@ -10,7 +10,21 @@ QUEUE_WAITING=5
 
 SUBSCRIPTION_NAME="$GCP_QUEUE-agent"
 
+should_exit = False
+
+def handle_sigterm(signum, frame):
+    global should_exit
+    print("SIGTERM received. Will exit soon.")
+    should_exit = True
+
+# Register the signal handler
+signal.signal(signal.SIGTERM, handle_sigterm)
+
 while true; do
+  if should_exit:
+    print("Exiting gracefully after step2.")
+    break
+
   echo "Polling for message..."
 
   MESSAGE=$(gcloud pubsub subscriptions pull "$SUBSCRIPTION_NAME" \
