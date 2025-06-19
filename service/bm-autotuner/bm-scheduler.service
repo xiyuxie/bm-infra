@@ -1,0 +1,15 @@
+[Unit]
+Description=Benchmark Autotune Service
+After=network.target
+
+[Service]
+Type=simple
+User=bm-autotuner
+WorkingDirectory=/home/bm-autotuner/bm-infra
+ExecStart=/home/bm-autotuner/bm-infra/scripts/scheduler/autotune_run.sh
+EnvironmentFile=/etc/environment
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
