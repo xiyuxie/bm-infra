@@ -1,5 +1,5 @@
 [Unit]
-Description=Benchmark Autotune Service
+Description=Benchmark Autotuner Service
 After=network.target
 
 [Service]

@@ -1,0 +1,15 @@
+[Unit]
+Description=Benchmark Monitor Service
+After=network.target
+
+[Service]
+Type=simple
+User=bm-monitor
+WorkingDirectory=/home/bm-monitor/bm-infra
+ExecStart=/home/bm-monitor/bm-infra/scripts/scheduler/retry.sh
+EnvironmentFile=/etc/environment
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

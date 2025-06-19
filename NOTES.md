@@ -8,16 +8,28 @@ sudo systemctl start bm-agent.service
 sudo systemctl stop bm-agent.service
 sudo systemctl status bm-agent.service
 sudo systemctl restart bm-agent.service
-
 sudo journalctl -u bm-agent
 sudo journalctl -u bm-agent -f
 sudo journalctl -u bm-agent -n 300 -f
+sudo su - bm-agent
 
 sudo systemctl status bm-scheduler.service
 sudo systemctl restart bm-scheduler.service
 sudo systemctl stop bm-scheduler.service
-
 sudo journalctl -u bm-scheduler -n 300 -f
+sudo su - bm-scheduler
+
+sudo systemctl status bm-monitor.service
+sudo systemctl restart bm-monitor.service
+sudo systemctl stop bm-monitor.service
+sudo journalctl -u bm-monitor -n 300 -f
+sudo su - bm-monitor
+
+sudo systemctl status bm-autotuner.service
+sudo systemctl restart bm-autotuner.service
+sudo systemctl stop bm-autotuner.service
+sudo journalctl -u bm-autotuner -n 300 -f
+sudo su - bm-autotuner
 
 sudo rm /etc/systemd/system/bm-agent.service
 
