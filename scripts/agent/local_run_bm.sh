@@ -110,7 +110,7 @@ if [[ -z "$throughput" || ! "$throughput" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
   exit 0
 fi
 
-if [[ -n "$EXPECTED_THROUGHPUT" ]]; then
+if [[ -n "${EXPECTED_THROUGHPUT:-}" ]]; then
   if (( $(echo "$throughput < $EXPECTED_THROUGHPUT" | bc -l) )); then
     echo "Error: Throughput ($throughput) < Expected ($EXPECTED_THROUGHPUT)"
     exit 0
