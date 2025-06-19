@@ -25,3 +25,8 @@ variable "spanner_db" {
 variable "gcs_bucket" {
   default = "vllm-cb-storage2"
 }
+
+variable "branch_hash" {
+  default = ""
+  description = "commit hash of bm-infra branch."
+}

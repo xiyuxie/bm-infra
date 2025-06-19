@@ -52,7 +52,8 @@ module "v6e-1" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  startup_script_path = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  branch_hash          = var.branch_hash
 }
 
 module "v6e-4" {
@@ -69,7 +70,8 @@ module "v6e-4" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  startup_script_path = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  branch_hash          = var.branch_hash
 }
 
 module "v6e-8" {
@@ -87,5 +89,6 @@ module "v6e-8" {
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
   mnt_disk_gb          = 2048
-  startup_script_path = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  branch_hash          = var.branch_hash
 }

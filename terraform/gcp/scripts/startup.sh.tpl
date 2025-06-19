@@ -58,6 +58,7 @@ sudo -u bm-agent -i bash << EOBM
 gcloud auth configure-docker ${region}-docker.pkg.dev --quiet
 rm -rf bm-infra
 git clone https://github.com/QiliangCui/bm-infra.git
+git reset --hard ${branch_hash}
 EOBM
 cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
 systemctl stop bm-agent.service
