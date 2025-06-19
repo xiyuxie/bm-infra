@@ -24,25 +24,24 @@ cp /root/.cargo/bin/minijinja-cli /usr/bin/minijinja-cli
 chmod 777 /usr/bin/minijinja-cli
 
 # Mount persistent disk
+
+sudo mkdir -p /mnt/disks/persist
+
+# Format if not already formatted
 if ! blkid /dev/nvme0n2; then
   echo "Formatting /dev/nvme0n2 as ext4..."
-  mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/nvme0n2
+  sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/nvme0n2
 fi
 
-echo "mkdir -p /mnt/disks/persist" 
-mkdir -p /mnt/disks/persist
+# Add to /etc/fstab using UUID
+disk_uuid=$(blkid -s UUID -o value /dev/nvme0n2)
+if ! grep -q "/mnt/disks/persist" /etc/fstab; then
+  echo "UUID=${disk_uuid} /mnt/disks/persist ext4 defaults,discard 0 2" | sudo tee -a /etc/fstab
+fi
 
-echo "chmod 777 -R /mnt/disks/persist"
-chmod 777 -R /mnt/disks/persist
-
-echo "mount -o discard,defaults /dev/nvme0n2 /mnt/disks/persist"
-mount -o discard,defaults /dev/nvme0n2 /mnt/disks/persist
-chmod 777 -R /mnt/disks/persist
-
-# resize in case the disk is larger.
-if mountpoint -q /mnt/disks/persist && blkid /dev/nvme0n2 | grep -q ext4; then
-  echo "Resizing ext4 filesystem on /dev/nvme0n2..."
-  sudo resize2fs /dev/nvme0n2
+# Only mount if not already mounted (first boot or recovery)
+if ! mountpoint -q /mnt/disks/persist; then
+  sudo mount /mnt/disks/persist  
 fi
 
 jq ". + {\"data-root\": \"/mnt/disks/persist\"}" /etc/docker/daemon.json > /tmp/daemon.json.tmp && mv /tmp/daemon.json.tmp /etc/docker/daemon.json

@@ -20,5 +20,5 @@ if [ "$disk_usage" -gt "$threshold" ]; then
   docker volume prune -f && docker system prune --force --filter "until=72h" --all
   echo "Docker images and volumes cleanup completed."
 else
-  echo "Disk usage is below $threshold%. No cleanup needed."
+  echo "Disk usage($disk_usage%) is below $threshold%. No cleanup needed."
 fi
