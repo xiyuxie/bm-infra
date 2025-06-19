@@ -36,7 +36,7 @@ fi
 # Add to /etc/fstab using UUID
 disk_uuid=$(blkid -s UUID -o value /dev/nvme0n2)
 if ! grep -q "/mnt/disks/persist" /etc/fstab; then
-  echo "UUID=${disk_uuid} /mnt/disks/persist ext4 defaults,discard 0 2" | sudo tee -a /etc/fstab
+  echo "UUID=$disk_uuid /mnt/disks/persist ext4 defaults,discard 0 2" | sudo tee -a /etc/fstab
 fi
 
 # Only mount if not already mounted (first boot or recovery)
