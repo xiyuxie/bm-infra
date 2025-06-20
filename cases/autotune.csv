@@ -63,14 +63,6 @@ v6e-8,RedHatAI/Meta-Llama-3.1-70B-Instruct-quantized.w8a8,256,512,8,2048,sonnet,
 v6e-8,RedHatAI/Meta-Llama-3.1-70B-Instruct-quantized.w8a8,256,1024,8,2048,sonnet,1800,128
 v6e-8,RedHatAI/Meta-Llama-3.1-70B-Instruct-quantized.w8a8,256,2048,8,2048,sonnet,1800,128
 v6e-8,RedHatAI/Meta-Llama-3.1-70B-Instruct-quantized.w8a8,256,4096,8,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,128,512,1,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,128,1024,1,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,128,2048,1,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,128,4096,1,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,256,512,1,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,256,1024,1,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,256,2048,1,2048,sonnet,1800,128
-v6e-1,meta-llama/Llama-3.1-8B-Instruct,256,4096,1,2048,sonnet,1800,128
 v6e-1,Qwen/Qwen2.5-7B-Instruct,128,512,1,2048,sonnet,1800,128
 v6e-1,Qwen/Qwen2.5-7B-Instruct,128,1024,1,2048,sonnet,1800,128
 v6e-1,Qwen/Qwen2.5-7B-Instruct,128,2048,1,2048,sonnet,1800,128
@@ -127,11 +119,3 @@ v6e-8,meta-llama/Llama-3.1-70B-Instruct,256,512,8,2048,sonnet,1800,128
 v6e-8,meta-llama/Llama-3.1-70B-Instruct,256,1024,8,2048,sonnet,1800,128
 v6e-8,meta-llama/Llama-3.1-70B-Instruct,256,2048,8,2048,sonnet,1800,128
 v6e-8,meta-llama/Llama-3.1-70B-Instruct,256,4096,8,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,128,512,1,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,128,1024,1,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,128,2048,1,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,128,4096,1,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,256,512,1,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,256,1024,1,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,256,2048,1,2048,sonnet,1800,128
-v6e-1,RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8,256,4096,1,2048,sonnet,1800,128
