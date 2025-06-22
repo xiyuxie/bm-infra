@@ -4,7 +4,7 @@ set -euo pipefail
 # Constants
 THRESHOLD_SECONDS=$((60 * 60 * 24))  # 1 day
 NOW=$(date +%s)
-CONDA="/home/bm-agent/miniconda3/bin/conda"
+CONDA="/mnt/disks/persist/bm-agent/miniconda3/bin/conda"
 ENV_BASE="$($CONDA info --base)/envs"
 
 echo "Scanning for old 'vllm-bm-*' environments older than 1 day in $ENV_BASE..."

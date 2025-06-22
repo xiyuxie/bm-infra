@@ -33,7 +33,7 @@ if [[ "${LOCAL_RUN_bm:-}" == "1" ]]; then
 
   # Miniconda version and install directory
   MINICONDA_VERSION=latest  # adjust if needed
-  MINICONDA_DIR="$HOME/miniconda3"
+  MINICONDA_DIR="/mnt/disks/persist/bm-agent/miniconda3"
   MINICONDA_SCRIPT="Miniconda3-$MINICONDA_VERSION-Linux-x86_64.sh"
   MINICONDA_URL="https://repo.anaconda.com/miniconda/$MINICONDA_SCRIPT"
 

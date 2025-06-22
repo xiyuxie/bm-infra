@@ -10,7 +10,7 @@ ENV_FILE=$1
 PYTHON_VERSION="3.12"
 VLLM_FOLDER="../vllm"
 VLLM_REPO="https://github.com/vllm-project/vllm"
-CONDA="/home/bm-agent/miniconda3/bin/conda"
+CONDA="/mnt/disks/persist/bm-agent/miniconda3/bin/conda"
 
 # Load environment
 source /etc/environment
