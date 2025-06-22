@@ -1,13 +1,13 @@
 #!/bin/bash
+set -euo pipefail
 
-# Threshold in seconds (1 day)
-THRESHOLD_SECONDS=$((60 * 60 * 24))
+# Constants
+THRESHOLD_SECONDS=$((60 * 60 * 24))  # 1 day
 NOW=$(date +%s)
+CONDA="/home/bm-agent/miniconda3/bin/conda"
+ENV_BASE="$($CONDA info --base)/envs"
 
-# Get conda base envs directory
-ENV_BASE="$(conda info --base)/envs"
-
-echo "Scanning for old 'vllm-bm-*' environments older than 1 day..."
+echo "Scanning for old 'vllm-bm-*' environments older than 1 day in $ENV_BASE..."
 
 for env_path in "$ENV_BASE"/vllm-bm-*; do
   [ -d "$env_path" ] || continue
@@ -18,8 +18,8 @@ for env_path in "$ENV_BASE"/vllm-bm-*; do
   age=$((NOW - mtime))
 
   if [ "$age" -gt "$THRESHOLD_SECONDS" ]; then
-    echo "Deleting old env: $env_name (age: $((age/3600)) hours)"
-    conda remove -n "$env_name" --all -y
+    echo "Deleting old env: $env_name (age: $((age / 3600)) hours)"
+    $CONDA remove -n "$env_name" --all -y || echo "Failed to remove $env_name"
   else
     echo "Keeping env: $env_name (recently modified)"
   fi
