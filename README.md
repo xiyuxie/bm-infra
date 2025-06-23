@@ -1,39 +1,144 @@
-# bm-infra
+# Benchmark Infrastructure and Tooling
 
-### Machine configs.
+## As a user to submit job to run on the agents
+
+### Prepair enviornment
+
+#### Insert following variables into /etc/environment. 
 
 ```
-export GCP_PROJECT_ID=cloud-tpu-inference-test
-export GCP_INSTANCE_ID=vllm-bm-inst
-export GCP_DATABASE_ID=vllm-bm-runs
-export GCP_REGION=southamerica-west1
-export GCS_BUCKET=vllm-cb-storage2
+echo 'GCP_PROJECT_ID=cloud-tpu-inference-test
+GCP_INSTANCE_ID=vllm-bm-inst
+GCP_DATABASE_ID=vllm-bm-runs
+GCP_REGION=southamerica-west1
+GCS_BUCKET=vllm-cb-storage2' | sudo tee -a /etc/environment
+```
 
-export GCP_QUEUE=vllm-bm-queue-{v6e-1, v6e-4, v6e-6}
-export HF_TOKEN=<>
-export GCP_INSTANCE_NAME=<your instance name>
+#### Docker setup
 
-# install jq for parsing json.
-sudo apt-get update && sudo apt-get install -y jq
-
-# give docker permission to access artifacts registry
+```
 yes | gcloud auth configure-docker $GCP_REGION-docker.pkg.dev
 
+sudo usermod -aG docker $USER
+
+newgrp docker
 ```
 
-### Install BM-Agent
+#### Install jq for parsing json
 
-This is to install it on dev machine mostly for debugging. 
+```
+sudo apt-get update && sudo apt-get install -y jq
+```
 
-Terrform deploys bm-agent when creating the agent machines.
+### Submit a job to run.
+
+1. login to gcp: `gcloud auth login`.  
+1. create a test case file like ./cases/case1.csv. Save it to a file like ~/my_test.csv
+1. go to this source code folder. 
+1. Run `./scripts/scheduler/create_job.sh <INPUT_CSV> [CODE_HASH] [JOB_REFERENCE] [RUN_TYPE]`
+   - INPUT_CSV: the test case file
+   - CODE_HASH: the [vllm](https://github.com/vllm-project/vllm) code hash you want to run. use "" to indicate latest. 
+   - JOB_REFERENCE: A string that you can use later to find the job in database. 
+   - RUN_TYPE: default is "MANUAL". No need to set this usually. 
+
+Example: 
+
+```
+./scripts/scheduler/create_job.sh ./configs/case1.csv
+
+./scripts/scheduler/create_job.sh ~/my_test.csv da9b523ce1fd5c27bfd18921ba0388bf2e8e4618 my_first_test
+```
+
+To see job status 
+
+```
+./scripts/manager/get_status.sh [JOB_REFERENCE]
+
+For example 
+./scripts/manager/get_status.sh my_first_test
+
+```
+
+Write some script to query the database as `./scripts/manager/get_status.sh` or go to the spanner to query and see more result. 
+
+### Scan a range of vllm commits
+
+
+Run `./scripts/manager/scan_commits.sh <INPUT_CSV> <START_HASH[-END_HASH]> [JOB_REFERENCE] [RUN_TYPE]`
+- INPUT_CSV: test case csv. 
+- START_HASH: scan starting from this commits.
+- END_HASH: scan till this commits(inclusive). If not provided, scan to latests.
+- JOB_REFERENCE: job reference for searching the job later. The script will append a number after your JOB_REFERENCE. See example below
+- RUN_TYPE: don't set it.
+
+Example
+
+```
+# to scan between c8134bea15826876e37694834ad87d9c4bdfb26b and 3da2313d781f73c4b3b6bd57a130f85b7c0f0ca4
+./scripts/manager/scan_commits.sh ~/my_test.csv c8134bea15826876e37694834ad87d9c4bdfb26b-3da2313d781f73c4b3b6bd57a130f85b7c0f0ca4 find_regression
+```
+The job reference will be like `find_regression_1`, `find_regression_2`... in the database. `find_regression_1` will be the first commit and `find_regression_2` will be the next commit.
+
+
+## Manually Setup a BM Agent - The machine to query the queue and run jobs.
+
+Not that the job will be run as a user "bm-agent" instead of yourself.
+
+### Prepair enviornment
+
+```
+echo 'GCP_PROJECT_ID=cloud-tpu-inference-test
+GCP_INSTANCE_ID=vllm-bm-inst
+GCP_DATABASE_ID=vllm-bm-runs
+GCP_REGION=southamerica-west1
+GCS_BUCKET=vllm-cb-storage2
+GCP_QUEUE=vllm-bm-queue-<v6e-1, v6e-4, v6e-6>
+HF_TOKEN=<your hugging face token>
+GCP_INSTANCE_NAME=<your instance name>'| sudo tee -a /etc/environment
+```
+
+### Attach a disk and mount to /mnt/disks/persist
+
+```
+# verify the mounted disk
+
+mountpoint /mnt/disks/persist
+
+```
+
+### Install BM-Agent Service
+If it is not a mounted disk, don't do following step. 
+Jobs will fail without a mounted disk.
+
+Install the bm-agent service.
 
 ```
 ./service/bm-agent/install.sh 
 ```
 
-### Deploy and Install everything with TF
+it installs a service bm-agent. It starts automatically to query the job queue and start to work on it.
 
-install terraform
+
+Use the command below to control them.
+
+```
+# check status
+sudo systemctl status bm-agent.service
+
+# stop 
+sudo systemctl stop bm-agent.service
+
+# disable so that it won't auto start.
+sudo systemctl disable bm-agent.service
+
+# see logs
+sudo journalctl -u bm-agent -n 300 -f
+
+```
+
+## Deploy and Install everything with TF
+
+### install terraform
 
 ```
 # 1. Install required packages
@@ -50,7 +155,7 @@ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://
 sudo apt-get update && sudo apt-get install terraform -y
 ```
 
-deploy
+### deploy
 
 ```
 pushd terraform/gcp
@@ -64,69 +169,6 @@ terraform apply
 popd
 ```
 
-### Create Looker Studio Report
+### To increase or decrease the capacity
 
-1   Create a "looker friendly" view like this(ok to be different): 
-
-```
-
-CREATE OR REPLACE VIEW
-  `HourlyRun` SQL SECURITY INVOKER AS
-SELECT
-  RunRecord.RecordId,
-  RunRecord.JobReference,
-  RunRecord.Model,
-  RunRecord.CodeHash,
-  RunRecord.Status,
-  RunRecord.Device,
-  IFNULL(RunRecord.Throughput, 0) AS Throughput, 
-  PARSE_TIMESTAMP('%Y%m%d_%H%M%S', RunRecord.JobReference, 'America/Los_Angeles') AS JobReferenceTime
-FROM
-  RunRecord
-WHERE
-  RunRecord.RunType = 'HOURLY'
-  AND RunRecord.Status IN ('COMPLETED',
-    'FAILED')
-  AND RunRecord.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
-ORDER BY
-  RunRecord.JobReference;
-
-```
-
-2.  https://lookerstudio.google.com/
-3.  Create a datasource and use Cloud Spanner as Data Source and use the view.
-4.  On the UI, choose column you care about and add field if needed, for example, a link to log, etc.
-5.  Create a report on it... a lot of manual work.
-
-### Test Run command
-
-Create a job
-
-```
-./scripts/scheduler/create_job.sh <INPUT_CSV> [CODE_HASH] [JOB_REFERENCE] [RUN_TYPE]
-./scripts/scheduler/create_job.sh ./configs/case1.csv
-./scripts/scheduler/create_job.sh ./configs/all_models_v6e_1.csv da9b523ce1fd5c27bfd18921ba0388bf2e8e4618 all_v6e1
-
-# to skip image building and pushing, use SKIP_BUILD_IMAGE=1
-SKIP_BUILD_IMAGE=1 ./scripts/scheduler/create_job.sh ./configs/all_models_v6e_1.csv da9b523ce1fd5c27bfd18921ba0388bf2e8e4618 all_v6e1
-```
-
-Get Job status
-
-```
-./scripts/manager/get_status.sh [JOB_REFERENCE]
-
-```
-
-Insert runs to database
-
-```
-./scripts/scheduler/schedule_run.sh ./configs/case1.csv a408820f2fcdd4025f05f8a43dc15604fe534367
-```
-
-Trigger run by Record id
-
-```
-./script/run_job.sh 5b5040f7-c815-4a87-ab8e-54a49fd49916
-```
-
+Change the machine number number in ./terraform/gcp/main.tf
