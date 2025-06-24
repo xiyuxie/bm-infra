@@ -7,8 +7,15 @@ BM_LOG="$WORKSPACE/bm_log.txt"
 
 if [ -n "$TARGET_COMMIT" ]; then
   head_hash=$(git rev-parse HEAD)
-  if [ "$TARGET_COMMIT" != "$head_hash" ]; then
-    echo "Error: target commit $TARGET_COMMIT does not match HEAD: $head_hash"
+  resolved_target=$(git rev-parse "$TARGET_COMMIT" 2>/dev/null)
+
+  if [ -z "$resolved_target" ]; then
+    echo "Error: target commit '$TARGET_COMMIT' is not a valid Git object" | tee -a $VLLM_LOG
+    exit 1
+  fi
+
+  if [ "$resolved_target" != "$head_hash" ]; then
+    echo "Error: target commit '$TARGET_COMMIT' does not match HEAD: $head_hash" | tee -a $VLLM_LOG
     exit 1
   fi
 fi

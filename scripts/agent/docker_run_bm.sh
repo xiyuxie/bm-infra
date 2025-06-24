@@ -24,6 +24,8 @@ remove_docker_container
 
 image_tag=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$CODE_HASH
 
+IFS='-' read -r VLLM_HASH TPU_COMMON_HASH TORCHAX_HASH _ <<< "$CODE_HASH"
+
 echo "image tag: $image_tag"
 
 docker pull $image_tag
@@ -64,7 +66,7 @@ docker run \
  -v $DOWNLOAD_DIR:$DOWNLOAD_DIR \
  --env-file $ENV_FILE \
  -e HF_TOKEN="$HF_TOKEN" \
- -e TARGET_COMMIT=$CODE_HASH \
+ -e TARGET_COMMIT=$VLLM_HASH \
  -e MODEL=$MODEL \
  -e WORKSPACE=/workspace \
  --name $CONTAINER_NAME \
@@ -92,7 +94,7 @@ docker cp "$CONTAINER_NAME:/workspace/vllm_log.txt" "$VLLM_LOG"
 docker cp "$CONTAINER_NAME:/workspace/bm_log.txt" "$BM_LOG"
 
 throughput=$(grep "Request throughput (req/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
-echo "throughput for $TEST_NAME at $CODE_HASH: $throughput"
+echo "throughput for $TEST_NAME at $VLLM_HASH: $throughput"
 
 
 echo "gsutil cp $LOG_ROOT/* $REMOTE_LOG_ROOT"
