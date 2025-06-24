@@ -6,7 +6,7 @@ HOUR_NOW=$(TZ="$TIMEZONE" date +%H)
 echo "./scripts/scheduler/create_job.sh ./cases/hourly.csv \"\" $TAG HOURLY"
 ./scripts/scheduler/create_job.sh ./cases/hourly.csv "" $TAG HOURLY
 
-if [[ "$HOUR_NOW" == "00" ]]; then
+if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
   echo "./scripts/scheduler/create_job.sh ./cases/autotune.csv \"\" $TAG AUTOTUNE"
   ./scripts/scheduler/create_job.sh ./cases/autotune.csv "" $TAG AUTOTUNE
 fi
