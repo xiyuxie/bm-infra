@@ -81,7 +81,7 @@ module "v6e-8" {
   }
   purpose              = var.purpose
   accelerator_type     = "v6e-8"
-  tpu_count            = 20
+  tpu_count            = 8
   tpu_zone             = var.zone
   region               = var.region
   project_id           = var.project_id
