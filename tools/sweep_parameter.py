@@ -56,6 +56,5 @@ sweep_csv(
     sweep_config={
         "MaxNumSeqs": [64, 128, 256, 512],
         "MaxNumBatchedTokens": [64, 128, 256, 512, 1024, 2048, 4096],
-        "Dataset": ["sonnet", "random"]
     }
 )
