@@ -68,6 +68,7 @@ docker run \
  -e HF_TOKEN="$HF_TOKEN" \
  -e TARGET_COMMIT=$VLLM_HASH \
  -e MODEL=$MODEL \
+ -e DATASET=$DATASET \
  -e WORKSPACE=/workspace \
  --name $CONTAINER_NAME \
  -d \

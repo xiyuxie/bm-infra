@@ -90,14 +90,30 @@ done
 echo "run benchmark test..."
 echo "logging to $BM_LOG"
 echo
-python benchmarks/benchmark_serving.py \
+
+if [ "$DATASET" = "sonnet" ]; then
+  python benchmarks/benchmark_serving.py \
     --backend vllm \
-    --model $MODEL  \
+    --model $MODEL \
     --dataset-name sonnet \
     --dataset-path benchmarks/sonnet_4x.txt \
     --sonnet-input-len $INPUT_LEN \
     --sonnet-output-len $OUTPUT_LEN \
-    --ignore-eos > "$BM_LOG"
+    --ignore-eos > "$BM_LOG" 2>&1
+
+elif [ "$DATASET" = "random" ]; then
+  python benchmarks/benchmark_serving.py \
+    --backend vllm \
+    --model $MODEL \
+    --dataset-name random \
+    --random-input-len $INPUT_LEN \
+    --random-output-len $OUTPUT_LEN \
+    --ignore-eos > "$BM_LOG" 2>&1
+
+else
+  echo "Error: unsupported dataset '$DATASET'" > "$BM_LOG" 2>&1
+  exit 1
+fi
 
 echo "completed..."
 echo
