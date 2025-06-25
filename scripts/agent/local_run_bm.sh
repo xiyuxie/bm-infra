@@ -26,9 +26,11 @@ if [ ! -d "$VLLM_FOLDER" ] || [ -z "$(ls -A "$VLLM_FOLDER")" ]; then
   git clone "$VLLM_REPO" "$VLLM_FOLDER"
 fi
 
+IFS='-' read -r VLLM_HASH TPU_COMMON_HASH TORCHAX_HASH _ <<< "$CODE_HASH"
+
 pushd "$VLLM_FOLDER"
 git fetch origin
-git reset --hard "$CODE_HASH"
+git reset --hard "$VLLM_HASH"
 popd
 
 # Check and create conda env
@@ -86,7 +88,7 @@ $CONDA run -n "$ENV_NAME" bash -c "
   cd '$VLLM_FOLDER'
   WORKSPACE='$TMP_WORKSPACE' \
   HF_TOKEN='$HF_TOKEN' \
-  TARGET_COMMIT='$CODE_HASH' \
+  TARGET_COMMIT='$VLLM_HASH' \
   MODEL='$MODEL' \
   ./run_bm.sh
 "
