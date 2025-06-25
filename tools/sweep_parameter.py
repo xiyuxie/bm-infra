@@ -52,9 +52,10 @@ def sweep_csv(input_csv_path, output_csv_path, sweep_config):
 
 sweep_csv(
     input_csv_path="/home/cuiq_google_com/base.csv",
-    output_csv_path="/home/cuiq_google_com/yarong.csv",
+    output_csv_path="/home/cuiq_google_com/result.csv",
     sweep_config={
         "MaxNumSeqs": [64, 128, 256, 512],
-        "MaxNumBatchedTokens": [64, 128, 256, 512, 1024, 2048, 4096]
+        "MaxNumBatchedTokens": [64, 128, 256, 512, 1024, 2048, 4096],
+        "Dataset": ["sonnet", "random"]
     }
 )
