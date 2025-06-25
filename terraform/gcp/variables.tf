@@ -27,6 +27,6 @@ variable "gcs_bucket" {
 }
 
 variable "branch_hash" {
-  default     = "b2c3d7ea09b57f9d06d7457cf74124a5a2e6d067"
+  default     = "b33fc3c7a7968eea02dcd5beb4c9dacf6f667be0"
   description = "commit hash of bm-infra branch."
 }
