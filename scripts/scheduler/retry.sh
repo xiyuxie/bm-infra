@@ -76,7 +76,7 @@ else
 fi
 
 # === Handle long-running RUNNING jobs ===
-echo "Checking for long-running RUNNING jobs (>30min)..."
+echo "Checking for long-running RUNNING jobs (>60min)..."
 
 SQL_RUNNING="
 SELECT RecordId, Device
@@ -84,7 +84,7 @@ FROM RunRecord
 WHERE Status='RUNNING'
   AND RunType IN ($RUN_TYPES_SQL)
   AND TryCount < $TRY_COUNT
-  AND LastUpdate < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 MINUTE)
+  AND LastUpdate < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 60 MINUTE)
   AND LastUpdate BETWEEN $TIME_RANGE_START AND $TIME_RANGE_END;
 "
 
