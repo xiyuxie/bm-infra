@@ -45,7 +45,7 @@ module "v6e-1" {
   }
   purpose              = var.purpose
   accelerator_type     = "v6e-1"
-  tpu_count            = 16
+  tpu_count            = var.v6e_1_count
   tpu_zone             = var.zone
   region               = var.region
   project_id           = var.project_id
@@ -63,7 +63,7 @@ module "v6e-4" {
   }
   purpose              = var.purpose
   accelerator_type     = "v6e-4"
-  tpu_count            = 10
+  tpu_count            = var.v6e_4_count
   tpu_zone             = var.zone
   region               = var.region
   project_id           = var.project_id
@@ -81,7 +81,7 @@ module "v6e-8" {
   }
   purpose              = var.purpose
   accelerator_type     = "v6e-8"
-  tpu_count            = 12
+  tpu_count            = var.v6e_8_count
   tpu_zone             = var.zone
   region               = var.region
   project_id           = var.project_id

@@ -26,6 +26,18 @@ variable "gcs_bucket" {
   default = "vllm-cb-storage2"
 }
 
+variable "v6e_1_count" {
+  default     = 16
+}
+
+variable "v6e_4_count" {
+  default     = 10
+}
+
+variable "v6e_8_count" {
+  default     = 12
+}
+
 variable "branch_hash" {
   default     = "322e2bf314e5c3f74c33c0d4a32892eb70cf0680"
   description = "commit hash of bm-infra branch."
