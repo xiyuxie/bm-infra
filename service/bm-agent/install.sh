@@ -25,7 +25,7 @@ git clone https://github.com/QiliangCui/bm-infra.git
 
 EOF
 
-if [[ "${LOCAL_RUN_bm:-}" == "1" ]]; then  
+if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then  
   echo "Installing Miniconda for bm-agent user..."
 
   sudo -u bm-agent -i bash <<'EOF'
