@@ -25,6 +25,7 @@ SELECT
   RunRecord.P99TPOT,
   RunRecord.P99TTFT,
   RunRecord.P99ETEL,
+  RunRecord.ExpectedETEL,
   RunRecord.LastUpdate,
   IFNULL(RunRecord.Throughput, 0) AS Throughput  
 FROM
