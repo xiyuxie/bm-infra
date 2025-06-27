@@ -9,8 +9,8 @@ fi
 echo "sudo usermod -aG docker bm-agent"
 sudo usermod -aG docker bm-agent
 
-echo "sudo apt-get update && sudo apt-get install -y jq"
-sudo apt-get update && sudo apt-get install -y jq
+echo "sudo apt-get update && sudo apt-get install -y jq gawk"
+sudo apt-get update && sudo apt-get install -y jq gawk
 
 echo "sudo -u bm-agent -i..."
 sudo -u bm-agent -i bash <<EOF
