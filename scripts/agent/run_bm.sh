@@ -4,7 +4,7 @@ set -euo pipefail
 
 VLLM_LOG="$WORKSPACE/vllm_log.txt"
 BM_LOG="$WORKSPACE/bm_log.txt"
-
+BEST_BM_LOG="$WORKSPACE/best_bm_log.txt"
 if [ -n "$TARGET_COMMIT" ]; then
   head_hash=$(git rev-parse HEAD)
   resolved_target=$(git rev-parse "$TARGET_COMMIT" 2>/dev/null)
@@ -84,40 +84,120 @@ for i in {1..120}; do
     fi
 done
 
-#
-# run test
-#
-echo "run benchmark test..."
-echo "logging to $BM_LOG"
-echo
+EXPECTED_ETEL=${EXPECTED_ETEL:-3600000}
 
-if [ "$DATASET" = "sonnet" ]; then
-  python benchmarks/benchmark_serving.py \
-    --backend vllm \
-    --model $MODEL \
-    --dataset-name sonnet \
-    --dataset-path benchmarks/sonnet_4x.txt \
-    --sonnet-input-len $INPUT_LEN \
-    --sonnet-output-len $OUTPUT_LEN \
-    --ignore-eos > "$BM_LOG" 2>&1
+run_benchmark(){  
+  #
+  # run test
+  #
+  echo "run benchmark test..."
+  echo "logging to $BM_LOG"
+  echo
+  
+  request_rate="$1"
+  if [ "$DATASET" = "sonnet" ]; then
+    python benchmarks/benchmark_serving.py \
+      --backend vllm \
+      --model $MODEL \
+      --request-rate $request_rate \
+      --dataset-name sonnet \
+      --dataset-path benchmarks/sonnet_4x.txt \
+      --sonnet-input-len $INPUT_LEN \
+      --sonnet-output-len $OUTPUT_LEN \
+      --percentile-metrics ttft,tpot,itl,e2el \
+      --ignore-eos > "$BM_LOG" 2>&1
 
-elif [ "$DATASET" = "random" ]; then
-  python benchmarks/benchmark_serving.py \
-    --backend vllm \
-    --model $MODEL \
-    --dataset-name random \
-    --random-input-len $INPUT_LEN \
-    --random-output-len $OUTPUT_LEN \
-    --ignore-eos > "$BM_LOG" 2>&1
+  elif [ "$DATASET" = "random" ]; then
+    python benchmarks/benchmark_serving.py \
+      --backend vllm \
+      --model $MODEL \
+      --request-rate $request_rate \
+      --dataset-name random \
+      --random-input-len $INPUT_LEN \
+      --random-output-len $OUTPUT_LEN \
+      --percentile-metrics ttft,tpot,itl,e2el \
+      --ignore-eos > "$BM_LOG" 2>&1
+  else
+    echo "Error: unsupported dataset '$DATASET'" > "$BM_LOG" 2>&1
+    exit 1
+  fi
 
-else
-  echo "Error: unsupported dataset '$DATASET'" > "$BM_LOG" 2>&1
+  echo "completed..."
+  echo
+
+  throughput=$(grep "Request throughput (req/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
+  p99_e2el=$(grep "P99 E2EL (ms):" "$BM_LOG" | awk '{print $NF}')
+
+  echo "throughput: $throughput, P99 E2EL:$p99_e2el"
+  echo
+
+  # return
+  echo "$throughput $p99_e2el"
+}
+read throughput p99_e2el < <(run_benchmark "inf" | tail -n 1) 
+
+echo "throughput:$throughput"
+echo "p99_e2el:$p99_e2el"
+
+# Step 1: check if initial run meets the E2EL requirement
+p99_int=$(printf "%.0f" "$p99_e2el")
+goal_int=$(printf "%.0f" "$EXPECTED_ETEL")
+
+if (( p99_int <= goal_int )); then
+  echo "Initial run: P99 E2EL ($p99_e2el ms) <= EXPECTED_ETEL ($EXPECTED_ETEL ms), good enough. Exiting 0."
+  exit 0
+fi
+
+echo "Initial run failed: P99 E2EL ($p99_e2el ms) > EXPECTED_ETEL ($EXPECTED_ETEL ms)"
+echo "Starting binary search to lower request rate..."
+
+# Step 2: Begin binary search
+low=0
+high=$(printf "%.0f" "$throughput")
+goal=$EXPECTED_ETEL
+
+# Round goal to nearest int
+goal_int=$(printf "%.0f" "$goal")
+
+best_rate=0
+best_throughput=0
+best_e2el=0
+
+while (( high - low > 0 )); do
+  mid=$(( (low + high + 1) / 2 ))
+  echo "Trying request_rate=$mid"
+
+  read throughput p99_e2el < <(run_benchmark "$mid" | tail -n 1)
+
+  # Convert p99_e2el to integer
+  p99_int=$(printf "%.0f" "$p99_e2el")
+
+  if (( p99_int <= goal_int )); then
+    echo "PASS: p99_e2el=$p99_e2el <= $goal"
+    best_rate=$mid
+    best_throughput=$throughput
+    best_e2el=$p99_e2el
+    low=$mid
+
+    # Backup best log
+    cp "$BM_LOG" "$BEST_BM_LOG"
+  else
+    echo "FAIL: p99_e2el=$p99_e2el > $goal"
+    high=$((mid - 1))
+  fi
+done
+
+if (( best_rate == 0 )); then
+  echo "Could not find a valid request_rate >= 1 that meets EXPECTED_ETEL=$EXPECTED_ETEL" | tee -a "$BM_LOG"
   exit 1
 fi
 
-echo "completed..."
-echo
+# Restore the best log to BM_LOG
+cp "$BEST_BM_LOG" "$BM_LOG"
 
-throughput=$(grep "Request throughput (req/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
-echo "throughput: $throughput"
 echo
+echo "======================================"
+echo "✓ Final best request_rate: $best_rate"
+echo "✓ Throughput: $best_throughput"
+echo "✓ P99 E2EL: $best_e2el"
+echo "======================================"
