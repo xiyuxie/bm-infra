@@ -94,7 +94,8 @@ GCP_REGION=southamerica-west1
 GCS_BUCKET=vllm-cb-storage2
 GCP_QUEUE=vllm-bm-queue-<v6e-1, v6e-4, v6e-6>
 HF_TOKEN=<your hugging face token>
-GCP_INSTANCE_NAME=<your instance name>'| sudo tee -a /etc/environment
+GCP_INSTANCE_NAME=<your instance name>
+LOCAL_RUN_BM=<0:run with VM or 1: run with Docker>'| sudo tee -a /etc/environment
 ```
 
 ### Attach a disk and mount to /mnt/disks/persist
