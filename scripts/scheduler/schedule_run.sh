@@ -16,6 +16,9 @@ if [ ! -f "$CSV_FILE" ]; then
   exit 1
 fi
 
+# milliseconds: one hour
+VERY_LARGE_EXPECTED_ETEL=3600000
+
 # === Config ===
 # Make sure these environment variables are set or export here
 # export GCP_PROJECT_ID="your-project"
@@ -23,7 +26,7 @@ fi
 # export GCP_DATABASE_ID="your-database"
 
 # === Read CSV and skip header ===
-tail -n +2 "$CSV_FILE" | while IFS=',' read -r DEVICE MODEL MAX_NUM_SEQS MAX_NUM_BATCHED_TOKENS TENSOR_PARALLEL_SIZE MAX_MODEL_LEN DATASET INPUT_LEN OUTPUT_LEN
+tail -n +2 "$CSV_FILE" | while IFS=',' read -r DEVICE MODEL MAX_NUM_SEQS MAX_NUM_BATCHED_TOKENS TENSOR_PARALLEL_SIZE MAX_MODEL_LEN DATASET INPUT_LEN OUTPUT_LEN EXPECTED_ETEL
 do
   RECORD_ID=$(uuidgen | tr 'A-Z' 'a-z')
 
@@ -36,7 +39,7 @@ do
     echo "Skip creating record in RunRecord table."
     continue
   fi
-
+  
   echo "Inserting Run: $RECORD_ID"
   gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
     --instance="$GCP_INSTANCE_ID" \
@@ -44,12 +47,18 @@ do
     --sql="INSERT INTO RunRecord (
       RecordId, Status, CreatedTime, Device, Model, RunType, CodeHash,
       MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen,
-      Dataset, InputLen, OutputLen, LastUpdate, CreatedBy,JobReference
+      Dataset, InputLen, OutputLen, LastUpdate, CreatedBy,JobReference, ExpectedETEL
     ) VALUES (
       '$RECORD_ID', 'CREATED', PENDING_COMMIT_TIMESTAMP(), '$DEVICE', '$MODEL', '$RUN_TYPE', '$CODEHASH',
       $MAX_NUM_SEQS, $MAX_NUM_BATCHED_TOKENS, $TENSOR_PARALLEL_SIZE, $MAX_MODEL_LEN,
-      '$DATASET', $INPUT_LEN, $OUTPUT_LEN, PENDING_COMMIT_TIMESTAMP(), '$USER', '$JOB_REFERENCE'
+      '$DATASET', $INPUT_LEN, $OUTPUT_LEN, PENDING_COMMIT_TIMESTAMP(), '$USER', '$JOB_REFERENCE',${EXPECTED_ETEL:-$VERY_LARGE_EXPECTED_ETEL}
     );"  
+  
+  # If insert failed, just continue without publishing
+  if [ $? -ne 0 ]; then
+    echo "Insert failed for $RECORD_ID — skipping publish." >&2
+    continue
+  fi
 
   echo "Publishing to Pub/Sub queue: $GCP_QUEUE"
   # Construct key-value string

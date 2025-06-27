@@ -1,4 +1,4 @@
-Device,Model,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen
+Device,Model,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen,ExpectedETEL
 v6e-1,meta-llama/Llama-3.1-8B-Instruct,128,512,1,2048,sonnet,1800,128
 v6e-8,mistralai/Mixtral-8x7B-Instruct-v0.1,128,512,8,2048,sonnet,1800,128
 v6e-1,Qwen/Qwen3-8B,128,512,1,2048,sonnet,1800,128
