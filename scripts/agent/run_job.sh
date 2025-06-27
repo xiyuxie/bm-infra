@@ -28,7 +28,7 @@ fi
 #
 # Run job in docker
 #
-if [[ "${LOCAL_RUN_bm:-}" == "1" ]]; then
+if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then
   echo "Running locally..."
   ./scripts/agent/local_run_bm.sh "artifacts/${RECORD_ID}.env"
 else

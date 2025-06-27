@@ -38,6 +38,16 @@ module "h100-8-queue" {
   accelerator_type     = "h100-8"
 }
 
+module "a100-1-queue" {
+  source = "./modules/queue"
+  providers = {
+    google = google
+  }
+
+  purpose              = var.purpose
+  accelerator_type     = "a100-1"
+}
+
 module "v6e-1" {
   source = "./modules/v6e"
   providers = {
