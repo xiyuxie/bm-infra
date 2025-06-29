@@ -1,6 +1,7 @@
 import csv
 import itertools
 import copy
+import sys
 
 def sweep_csv(input_csv_path, output_csv_path, sweep_config):
     """
@@ -50,11 +51,19 @@ def sweep_csv(input_csv_path, output_csv_path, sweep_config):
     print(f"Sweep complete: {len(expanded_rows)} rows written to {output_csv_path}")
 
 
-sweep_csv(
-    input_csv_path="/home/cuiq_google_com/base.csv",
-    output_csv_path="/home/cuiq_google_com/result.csv",
-    sweep_config={
-        "MaxNumSeqs": [64, 128, 256, 512],
-        "MaxNumBatchedTokens": [64, 128, 256, 512, 1024, 2048, 4096],
-    }
-)
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python3 sweep_parameter.py <input_csv_path> <output_csv_path>")
+        sys.exit(1)
+
+    input_csv_path = sys.argv[1]
+    output_csv_path = sys.argv[2]
+
+    sweep_csv(
+        input_csv_path=input_csv_path,
+        output_csv_path=output_csv_path,
+        sweep_config={
+            "MaxNumSeqs": [64, 128, 256, 512],
+            "MaxNumBatchedTokens": [64, 128, 256, 512, 1024, 2048, 4096],
+        }
+    )
