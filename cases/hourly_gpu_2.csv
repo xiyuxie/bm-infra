@@ -1,6 +1,6 @@
 Device,Model,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen,ExpectedETEL
 h100-8,mistralai/Mistral-Small-24B-Instruct-2501,256,2048,8,2048,sonnet,1800,128
-h100-8,mistralai/Mixtral-8x7B-Instruct-v0.1,256,4096,8,2048,sonnet,1800,128
+h100-8,mistralai/Mixtral-8x7B-Instruct-v0.1,256,1024,8,2048,sonnet,1800,128
 h100-8,Qwen/Qwen2.5-1.5B-Instruct,256,4096,1,2048,sonnet,1800,128
 h100-8,Qwen/Qwen2.5-7B-Instruct,256,2048,1,2048,sonnet,1800,128
 h100-8,Qwen/Qwen3-8B,128,512,1,2048,sonnet,1800,128
