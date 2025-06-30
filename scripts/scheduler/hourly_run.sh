@@ -16,6 +16,13 @@ else
   ./scripts/scheduler/create_job.sh ./cases/hourly_gpu_2.csv "" $TAG HOURLY
 fi
 
+# Run TorchAx test.
+# Eventually, TorchAx and vLLM should run the same test case.
+# for now, we start from v6e-1.
+echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax.csv \"\" $TAG HOURLY_TORCHAX TPU_COMMONS"
+./scripts/scheduler/create_job.sh ./cases/hourly_torchax.csv "" $TAG HOURLY_TORCHAX TPU_COMMONS
+
+
 if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
   echo "./scripts/scheduler/create_job.sh ./cases/autotune.csv \"\" $TAG AUTOTUNE"
   ./scripts/scheduler/create_job.sh ./cases/autotune.csv "" $TAG AUTOTUNE
