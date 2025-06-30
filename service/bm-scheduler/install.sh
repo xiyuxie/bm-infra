@@ -20,6 +20,10 @@ gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
 echo "rm -rf bm-infra"
 rm -rf bm-infra
 
+echo "machine github.com
+login $GITHUB_USERNAME
+password $GITHUB_PERSONAL_ACCESS_TOKEN" | tee -a /home/bm-scheduler/.netrc
+
 echo "git clone https://github.com/QiliangCui/bm-infra.git"
 git clone https://github.com/QiliangCui/bm-infra.git
 
