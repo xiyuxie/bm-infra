@@ -19,6 +19,9 @@ fi
 if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
   echo "./scripts/scheduler/create_job.sh ./cases/autotune.csv \"\" $TAG AUTOTUNE"
   ./scripts/scheduler/create_job.sh ./cases/autotune.csv "" $TAG AUTOTUNE
+
+  echo "./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv \"\" $TAG AUTOTUNE"
+  ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE
 fi
 
 echo "./scripts/cleanup_docker.sh"

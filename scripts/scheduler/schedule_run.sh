@@ -26,8 +26,12 @@ VERY_LARGE_EXPECTED_ETEL=3600000
 # export GCP_DATABASE_ID="your-database"
 
 # === Read CSV and skip header ===
-tail -n +2 "$CSV_FILE" | while IFS=',' read -r DEVICE MODEL MAX_NUM_SEQS MAX_NUM_BATCHED_TOKENS TENSOR_PARALLEL_SIZE MAX_MODEL_LEN DATASET INPUT_LEN OUTPUT_LEN EXPECTED_ETEL
-do
+tail -n +2 "$CSV_FILE" | while read -r line; do
+
+  line=$(echo "$line" | tr -d '\r')
+    # Safely split CSV line into variables
+  IFS=',' read -r DEVICE MODEL MAX_NUM_SEQS MAX_NUM_BATCHED_TOKENS TENSOR_PARALLEL_SIZE MAX_MODEL_LEN DATASET INPUT_LEN OUTPUT_LEN EXPECTED_ETEL <<< "$line"
+
   RECORD_ID=$(uuidgen | tr 'A-Z' 'a-z')
 
   # calculate the queue name from the device
