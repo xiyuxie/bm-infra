@@ -95,7 +95,10 @@ GCS_BUCKET=vllm-cb-storage2
 GCP_QUEUE=vllm-bm-queue-<v6e-1, v6e-4, v6e-6>
 HF_TOKEN=<your hugging face token>
 GCP_INSTANCE_NAME=<your instance name>
-LOCAL_RUN_BM=<0:run with VM or 1: run with Docker>'| sudo tee -a /etc/environment
+LOCAL_RUN_BM=<0:run with VM or 1: run with Docker>
+GITHUB_USERNAME=<user name - for only private repo>
+GITHUB_PERSONAL_ACCESS_TOKEN=<access token - for only private repo>
+'| sudo tee -a /etc/environment
 ```
 
 ### Attach a disk and mount to /mnt/disks/persist
