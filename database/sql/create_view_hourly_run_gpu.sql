@@ -16,6 +16,6 @@ WHERE
   AND RunRecord.Status IN ('COMPLETED',
     'FAILED')
   AND RunRecord.Device LIKE 'h100'
-  AND RunRecord.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+  AND RunRecord.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
 ORDER BY
   RunRecord.JobReference;

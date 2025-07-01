@@ -17,7 +17,7 @@ SELECT
 FROM RunRecord r
 WHERE r.RunType = 'HOURLY'
   AND r.Status IN ('COMPLETED', 'FAILED')
-  AND r.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+  AND r.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
   AND r.Throughput = (
     SELECT MAX(r2.Throughput)
     FROM RunRecord r2
