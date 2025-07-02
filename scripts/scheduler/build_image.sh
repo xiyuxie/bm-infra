@@ -10,13 +10,19 @@ image_tag="$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu:$CODE
 echo "Image tag: $image_tag"
 
 # 1. Check if image exists remotely
-if gcloud artifacts docker tags list "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu" \
+# 1. Check if image exists remotely
+if ! TAGS=$(gcloud artifacts docker tags list "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/vllm-tpu-bm/vllm-tpu" \
     --project="$GCP_PROJECT_ID" \
-    --format="value(tag)" \
-  | grep -qw "$CODE_HASH"; then
-    echo "Remote image $image_tag already exists. Skipping build and push."
-    popd
-    exit 0
+    --format="value(tag)"); then
+  echo "Failed to list tags from Artifact Registry. Exiting." >&2
+  popd
+  exit 1
+fi
+
+if echo "$TAGS" | grep -qw "$CODE_HASH"; then
+  echo "Remote image $image_tag already exists. Skipping build and push."
+  popd
+  exit 0
 fi
 
 # 2. Check if image exists locally
