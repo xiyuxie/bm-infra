@@ -123,3 +123,33 @@ fi
 
 # Write result file
 echo "Throughput=$throughput" > "artifacts/$RECORD_ID.result"
+
+extract_value() {
+  local section="$1"
+  local label="$2"  # Mean, Median, or P99
+  grep "$section (ms):" "$BM_LOG" | \
+    awk -v label="$label" '$0 ~ label { print $NF }'
+}
+
+# Median values
+MedianITL=$(extract_value "ITL" "Median")
+MedianTPOT=$(extract_value "TPOT" "Median")
+MedianTTFT=$(extract_value "TTFT" "Median")
+MedianETEL=$(extract_value "E2EL" "Median")
+
+# P99 values
+P99ITL=$(extract_value "ITL" "P99")
+P99TPOT=$(extract_value "TPOT" "P99")
+P99TTFT=$(extract_value "TTFT" "P99")
+P99ETEL=$(extract_value "E2EL" "P99")
+
+cat <<EOF >> "artifacts/$RECORD_ID.result"
+MedianITL=$MedianITL
+MedianTPOT=$MedianTPOT
+MedianTTFT=$MedianTTFT
+MedianETEL=$MedianETEL
+P99ITL=$P99ITL
+P99TPOT=$P99TPOT
+P99TTFT=$P99TTFT
+P99ETEL=$P99ETEL
+EOF
