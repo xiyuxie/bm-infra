@@ -13,11 +13,11 @@ disk_usage=$(df "$docker_root" | tail -1 | awk '{print $5}' | sed 's/%//')
 # Define the threshold
 threshold=70
 if [ "$disk_usage" -gt "$threshold" ]; then
-  echo "Disk usage is above $threshold%. Cleaning up Docker images and volumes..."
+  echo "Disk usage($disk_usage) is above $threshold%. Cleaning up Docker images and volumes..."
   # Remove dangling images (those that are not tagged and not used by any container)
   docker image prune -f
   # Remove unused volumes / force the system prune for old images as well.
-  docker volume prune -f && docker system prune --force --filter "until=72h" --all
+  docker volume prune -f && docker system prune --force --filter "until=48h" --all
   echo "Docker images and volumes cleanup completed."
 else
   echo "Disk usage($disk_usage%) is below $threshold%. No cleanup needed."
