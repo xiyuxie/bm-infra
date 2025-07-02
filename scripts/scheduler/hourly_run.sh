@@ -27,7 +27,7 @@ echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax.csv \"\" $TAG HOU
 # for now, we start from v6e-1.
 echo "./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv \"\" $TAG HOURLY_JAX TPU_COMMONS jax"
 # TODO: we ideally don't want to pin the vLLM version, but we want to keep it in sync with the TPU Commons-needed vLLM version
-./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv "3c545c0c3b98ee642373a308197d750d0e449403" $TAG HOURLY_JAX TPU_COMMONS jax
+./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv "3c545c0c3" $TAG HOURLY_JAX TPU_COMMONS jax
 
 
 if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then

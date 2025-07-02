@@ -1,11 +1,11 @@
-/* 
+/*
 For each (Model), find the latest pair of results (i.e., RunType = 'HOURLY' and HOURLY_TORCHAX') with the same JobReference.
 Compare their throughputs.
 
 Output: Model, ThroughputHourly, ThroughputHourlyTorchax, optionally Devices (but not JobReference).
 
 In other words: for each model, find the latest JobReference where both RunTypes exist, then aggregate and compare.
-*/ 
+*/
 
 CREATE OR REPLACE VIEW `TpuCompareBackend` SQL SECURITY INVOKER AS
 SELECT
@@ -13,7 +13,8 @@ SELECT
   j.JobReference,
   STRING_AGG(DISTINCT j.Device, ', ') AS Devices,
   MAX(CASE WHEN j.RunType = 'HOURLY' THEN j.Throughput ELSE NULL END) AS ThroughputHourly,
-  MAX(CASE WHEN j.RunType = 'HOURLY_TORCHAX' THEN j.Throughput ELSE NULL END) AS ThroughputHourlyTorchax
+  MAX(CASE WHEN j.RunType = 'HOURLY_TORCHAX' THEN j.Throughput ELSE NULL END) AS ThroughputHourlyTorchax,
+  MAX(CASE WHEN j.RunType = 'HOURLY_JAX' THEN j.Throughput ELSE NULL END) AS ThroughputHourlyJax
 FROM (
   SELECT
     f.Model,
@@ -27,12 +28,12 @@ FROM (
       p.Model,
       MAX(p.JobReference) AS LatestJobRef
     FROM HourlyRunAllTPU p
-    WHERE p.RunType IN ('HOURLY', 'HOURLY_TORCHAX')
+    WHERE p.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
     GROUP BY p.Model
     HAVING COUNT(DISTINCT p.RunType) = 2
   ) p
   ON f.Model = p.Model AND f.JobReference = p.LatestJobRef
-  WHERE f.RunType IN ('HOURLY', 'HOURLY_TORCHAX')
+  WHERE f.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
 ) j
 GROUP BY
   j.Model,
