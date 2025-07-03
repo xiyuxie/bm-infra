@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `HourlyRun` SQL SECURITY INVOKER AS
+  `HourlyRunAll30Days` SQL SECURITY INVOKER AS
 SELECT
   RunRecord.RecordId,
   RunRecord.JobReference,
@@ -22,8 +22,7 @@ FROM
 WHERE
   RunRecord.RunType = 'HOURLY'
   AND RunRecord.Status IN ('COMPLETED',
-    'FAILED')
-  AND RunRecord.Device LIKE 'v6e-%'
-  AND RunRecord.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
+    'FAILED')  
+  AND RunRecord.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
 ORDER BY
   RunRecord.JobReference;

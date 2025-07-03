@@ -31,8 +31,12 @@ fi
 pushd artifacts
 
 VLLM_TORCHAX_ENABLED=0
+VLLM_XLA_USE_SPMD=0
 if [ "$TPU_BACKEND_TYPE" = "torchax" ]; then
   VLLM_TORCHAX_ENABLED=1
+elif [ "$TPU_BACKEND_TYPE" = "torchaxspmd" ]; then
+  VLLM_TORCHAX_ENABLED=1
+  VLLM_XLA_USE_SPMD=1
 fi
 
 echo "VLLM_TORCHAX_ENABLED=$VLLM_TORCHAX_ENABLED"
@@ -44,6 +48,7 @@ VLLM_TARGET_DEVICE=tpu DOCKER_BUILDKIT=1 docker build \
  --build-arg GIT_REPO_CHECK=0 \
  --build-arg BASE_IMAGE=$BASE_IMAGE \
  --build-arg VLLM_TORCHAX_ENABLED=$VLLM_TORCHAX_ENABLED \
+ --build-arg VLLM_XLA_USE_SPMD=$VLLM_XLA_USE_SPMD \
  --build-arg TPU_BACKEND_TYPE=$TPU_BACKEND_TYPE \
  --tag $IMAGE_TAG \
  --progress plain \

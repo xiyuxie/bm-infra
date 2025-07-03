@@ -1,49 +1,70 @@
-CREATE OR REPLACE VIEW `LatestGPUvsTPU`
-SQL SECURITY INVOKER AS
-
+CREATE OR REPLACE VIEW `LatestGPUvsTPU` SQL SECURITY INVOKER AS
 SELECT
-  c.JobReference,
-  c.Model,
-  c.GPUThroughput,
-  c.TPUThroughput,
-  c.Devices
+  j.Model,
+  j.JobReference,
+  STRING_AGG(DISTINCT j.Device, ', ') AS Devices,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.Throughput ELSE NULL END) AS GPUThroughput,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.Throughput ELSE NULL END) AS TPUThroughput,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.MedianITL ELSE NULL END) AS GPUMedianITL,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.MedianITL ELSE NULL END) AS TPUMedianITL,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.MedianTPOT ELSE NULL END) AS GPUMedianTPOT,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.MedianTPOT ELSE NULL END) AS TPUMedianTPOT,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.MedianTTFT ELSE NULL END) AS GPUMedianTTFT,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.MedianTTFT ELSE NULL END) AS TPUMedianTTFT,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.MedianETEL ELSE NULL END) AS GPUMedianETEL,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.MedianETEL ELSE NULL END) AS TPUMedianETEL,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.P99ITL ELSE NULL END) AS GPUP99ITL,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.P99ITL ELSE NULL END) AS TPUP99ITL,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.P99TPOT ELSE NULL END) AS GPUP99TPOT,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.P99TPOT ELSE NULL END) AS TPUP99TPOT,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.P99TTFT ELSE NULL END) AS GPUP99TTFT,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.P99TTFT ELSE NULL END) AS TPUP99TTFT,
+
+  MAX(CASE WHEN j.Device = 'h100-8' THEN j.P99ETEL ELSE NULL END) AS GPUP99ETEL,
+  MAX(CASE WHEN j.Device IN ('v6e-8', 'v6e-1') THEN j.P99ETEL ELSE NULL END) AS TPUP99ETEL
+
 FROM (
   SELECT
-    cr.JobReference,
-    cr.Model,
-    ARRAY_AGG(DISTINCT cr.Device) AS Devices,
-    MAX(CASE WHEN cr.Device = 'h100-8' THEN cr.Throughput END) AS GPUThroughput,
-    MAX(CASE WHEN cr.Device IN ('v6e-8', 'v6e-1') THEN cr.Throughput END) AS TPUThroughput
-  FROM
-    HourlyRunAll30Days AS cr
-  WHERE
-    cr.Status = 'COMPLETED'
-    AND cr.Device IN ('h100-8', 'v6e-8', 'v6e-1')
-  GROUP BY
-    cr.JobReference,
-    cr.Model
-  HAVING
-    COUNT(DISTINCT cr.Device) = 2
-) AS c
-JOIN (
-  SELECT
-    Model,
-    MAX(JobReference) AS MaxJobReference
-  FROM (
+    f.Model,
+    f.JobReference,
+    f.Device,
+    f.Throughput,
+    f.MedianITL,
+    f.MedianTPOT,
+    f.MedianTTFT,
+    f.MedianETEL,
+    f.P99ITL,
+    f.P99TPOT,
+    f.P99TTFT,
+    f.P99ETEL
+  FROM HourlyRunAll30Days f
+  JOIN (
     SELECT
-      cr.JobReference,
-      cr.Model
-    FROM
-      HourlyRunAll30Days AS cr
-    WHERE
-      cr.Status = 'COMPLETED'
-      AND cr.Device IN ('h100-8', 'v6e-8', 'v6e-1')
-    GROUP BY
-      cr.JobReference,
-      cr.Model
-    HAVING
-      COUNT(DISTINCT cr.Device) = 2
-  )
-  GROUP BY Model
-) AS l
-ON c.Model = l.Model AND c.JobReference = l.MaxJobReference;
+      p.Model,
+      MAX(p.JobReference) AS LatestJobRef
+    FROM (
+      SELECT
+        q.Model,
+        q.JobReference
+      FROM HourlyRunAll30Days q
+      WHERE q.Status = 'COMPLETED'
+        AND q.Device IN ('h100-8', 'v6e-8', 'v6e-1')
+      GROUP BY q.Model, q.JobReference
+      HAVING COUNT(DISTINCT q.Device) >= 2
+    ) p
+    GROUP BY p.Model
+  ) latest
+  ON f.Model = latest.Model AND f.JobReference = latest.LatestJobRef
+  WHERE f.Status = 'COMPLETED'
+    AND f.Device IN ('h100-8', 'v6e-8', 'v6e-1')
+) j
+GROUP BY j.Model, j.JobReference
+ORDER BY j.Model;

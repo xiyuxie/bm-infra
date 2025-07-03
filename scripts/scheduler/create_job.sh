@@ -19,8 +19,8 @@ if [[ "$REPO" != "DEFAULT" && "$REPO" != "TPU_COMMONS" ]]; then
   exit 1
 fi
 
-if [[ "$TPU_COMMONS_TPU_BACKEND_TYPE" != "torchax" && "$TPU_COMMONS_TPU_BACKEND_TYPE" != "jax" ]]; then
-  echo "Error: TPU_COMMONS_TPU_BACKEND_TYPE must be either torchax or jax, but got '$TPU_COMMONS_TPU_BACKEND_TYPE'"
+if [[ "$TPU_COMMONS_TPU_BACKEND_TYPE" != "torchax" && "$TPU_COMMONS_TPU_BACKEND_TYPE" != "jax" && "$TPU_COMMONS_TPU_BACKEND_TYPE" != "torchaxspmd" ]]; then
+  echo "Error: TPU_COMMONS_TPU_BACKEND_TYPE must be either torchax, torchaxspmd or jax, but got '$TPU_COMMONS_TPU_BACKEND_TYPE'"
   exit 1
 fi
 
