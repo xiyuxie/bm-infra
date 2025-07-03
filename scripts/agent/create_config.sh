@@ -12,6 +12,7 @@ RECORD_ID="$1"
 mkdir -p ./artifacts
 
 ENV_FILE="artifacts/${RECORD_ID}.env"
+ENV_FILE_TMP="$ENV_FILE.tmp"
 
 # The script below generates the result in this format:
 # MODEL=meta-llama/Llama-3.1-8B-Instruct
@@ -24,7 +25,7 @@ ENV_FILE="artifacts/${RECORD_ID}.env"
 gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
   --instance="$GCP_INSTANCE_ID" \
   --project="$GCP_PROJECT_ID" \
-  --sql="SELECT RecordId, Model, CodeHash, MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen, Dataset, InputLen, OutputLen, ExpectedETEL FROM RunRecord WHERE RecordId = '$RECORD_ID';" | \
+  --sql="SELECT RecordId, Model, CodeHash, MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen, Dataset, InputLen, OutputLen, ExpectedETEL, ExtraEnvs FROM RunRecord WHERE RecordId = '$RECORD_ID';" | \
   gawk 'NR==1 {
     for (i=1; i<=NF; i++) {
       # Insert underscore before uppercase letters preceded by a lowercase letter
@@ -36,9 +37,24 @@ gcloud spanner databases execute-sql "$GCP_DATABASE_ID" \
     for (i=1; i<=NF; i++) {
       print header[i] "=" $i
     }
-  }'> $ENV_FILE
+  }'> $ENV_FILE_TMP
 
-# Insert static field
-echo "TEST_NAME=static" >> $ENV_FILE
-echo "CONTAINER_NAME=vllm-tpu" >> $ENV_FILE
-echo "DOWNLOAD_DIR=/mnt/disks/persist" >> $ENV_FILE
+# Process EXTRA_ENVS line
+EXTRA_ENVS_LINE=$(grep '^EXTRA_ENVS=' "$ENV_FILE_TMP")
+EXTRA_ENVS_VALUE="${EXTRA_ENVS_LINE#EXTRA_ENVS=}"
+
+# Remove the original EXTRA_ENVS line
+grep -v '^EXTRA_ENVS=' "$ENV_FILE_TMP" > "${ENV_FILE}"
+
+# Append the split env vars from EXTRA_ENVS
+IFS=';' read -ra ENV_PAIRS <<< "$EXTRA_ENVS_VALUE"
+for pair in "${ENV_PAIRS[@]}"; do
+  echo "$pair" >> "${ENV_FILE}"
+done
+
+# Add static fields
+cat <<EOF >> "${ENV_FILE}"
+TEST_NAME=static
+CONTAINER_NAME=vllm-tpu
+DOWNLOAD_DIR=/mnt/disks/persist
+EOF
