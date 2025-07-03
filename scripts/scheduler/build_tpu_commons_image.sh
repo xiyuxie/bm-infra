@@ -37,10 +37,14 @@ if [ "$TPU_BACKEND_TYPE" = "torchax" ]; then
 elif [ "$TPU_BACKEND_TYPE" = "torchaxspmd" ]; then
   VLLM_TORCHAX_ENABLED=1
   VLLM_XLA_USE_SPMD=1
+  # hack: torchaxspmd is not a real backend name.
+  TPU_BACKEND_TYPE=torchax
 fi
 
+echo "Building image with the following parameters:"
 echo "VLLM_TORCHAX_ENABLED=$VLLM_TORCHAX_ENABLED"
 echo "TPU_BACKEND_TYPE=$TPU_BACKEND_TYPE"
+echo "VLLM_XLA_USE_SPMD=$VLLM_XLA_USE_SPMD"
 
 VLLM_TARGET_DEVICE=tpu DOCKER_BUILDKIT=1 docker build \
  --build-arg max_jobs=16 \
