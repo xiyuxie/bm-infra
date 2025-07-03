@@ -22,6 +22,10 @@ fi
 echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax.csv \"\" $TAG HOURLY_TORCHAX TPU_COMMONS"
 ./scripts/scheduler/create_job.sh ./cases/hourly_torchax.csv "" $TAG HOURLY_TORCHAX TPU_COMMONS
 
+# Torchax spmd
+echo "./scripts/scheduler/create_job.sh cases/hourly_torchaxspmd.csv \"\" $TAG HOURLY_TORCHAX TPU_COMMONS" torchaxspmd
+./scripts/scheduler/create_job.sh cases/hourly_torchaxspmd.csv "" $TAG HOURLY_TORCHAX TPU_COMMONS torchaxspmd
+
 # Run TPU Commons + JAX test.
 # Eventually, JAX and vLLM should run the same test case.
 # for now, we start from v6e-1.
