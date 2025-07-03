@@ -10,11 +10,12 @@ SELECT
   view1.OutputLen,
   view1.TensorParallelSize,
   view1.MaxModelLen,
+  view1.Backend,
 
   view1.Throughput AS BestThroughput,
   view2.Throughput AS HourlyThroughput,
 
-  # tuned
+  -- tuned
   view1.MaxNumSeqs as BestMaxNumSeqs,
   view1.MaxNumBatchedTokens as BestMaxNumBatchedTokens,
   view2.MaxNumSeqs as HourlyMaxNumSeqs,
@@ -31,7 +32,7 @@ ON
   view1.InputLen = view2.InputLen AND
   view1.OutputLen = view2.OutputLen AND
   view1.TensorParallelSize = view2.TensorParallelSize AND
-  view1.MaxModelLen = view2.MaxModelLen
+  view1.MaxModelLen = view2.MaxModelLen AND
+  view1.Backend = view2.Backend
 WHERE  
-  view1.Throughput > view2.Throughput
-  
+  view1.Throughput > view2.Throughput  

@@ -11,11 +11,18 @@ SELECT
   r.MaxNumBatchedTokens,
   r.TensorParallelSize,
   r.MaxModelLen,
+  r.RunType,
   r.InputLen,
   r.OutputLen,
-  r.ExpectedETEL
+  r.ExpectedETEL,
+  CASE
+    WHEN r.RunType = 'AUTOTUNE' THEN 'torchxla'
+    WHEN r.RunType = 'AUTOTUNE_TORCHAX' THEN 'torchax'
+    WHEN r.RunType = 'AUTOTUNE_JAX' THEN 'jax'
+    ELSE 'unknown'
+  END AS Backend
 FROM RunRecord r
-WHERE r.RunType = 'AUTOTUNE'
+WHERE r.RunType IN ('AUTOTUNE', 'AUTOTUNE_TORCHAX', 'AUTOTUNE_JAX')
   AND r.Status IN ('COMPLETED', 'FAILED')
   AND r.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
   AND r.Throughput = (
@@ -28,8 +35,9 @@ WHERE r.RunType = 'AUTOTUNE'
       AND r2.InputLen = r.InputLen
       AND r2.OutputLen = r.OutputLen
       AND r2.ExpectedETEL = r.ExpectedETEL
-      AND r2.RunType = 'AUTOTUNE'
+      AND r2.RunType IN ('AUTOTUNE', 'AUTOTUNE_TORCHAX', 'AUTOTUNE_JAX')
+      AND r2.RunType = r.RunType
       AND r2.Status IN ('COMPLETED', 'FAILED')
-      AND r2.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+      AND r2.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
   )
 ORDER BY r.JobReference;
