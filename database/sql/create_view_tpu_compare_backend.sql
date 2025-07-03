@@ -10,11 +10,10 @@ In other words: for each model, find the latest JobReference where both RunTypes
 CREATE OR REPLACE VIEW `TpuCompareBackend` SQL SECURITY INVOKER AS
 SELECT
   j.Model,
-  j.JobReference,
   STRING_AGG(DISTINCT j.Device, ', ') AS Devices,
-  MAX(CASE WHEN j.RunType = 'HOURLY' THEN j.Throughput ELSE NULL END) AS ThroughputHourly,
-  MAX(CASE WHEN j.RunType = 'HOURLY_TORCHAX' THEN j.Throughput ELSE NULL END) AS ThroughputHourlyTorchax,
-  MAX(CASE WHEN j.RunType = 'HOURLY_JAX' THEN j.Throughput ELSE NULL END) AS ThroughputHourlyJax
+  IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourly,
+  IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY_TORCHAX' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourlyTorchax,
+  IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY_JAX' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourlyJax
 FROM (
   SELECT
     f.Model,
@@ -22,21 +21,19 @@ FROM (
     f.RunType,
     f.Device,
     f.Throughput
-  FROM HourlyRunAllTPU f
+  FROM HourlyRunAllTPU AS f
   JOIN (
     SELECT
       p.Model,
       MAX(p.JobReference) AS LatestJobRef
-    FROM HourlyRunAllTPU p
+    FROM HourlyRunAllTPU AS p
     WHERE p.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
     GROUP BY p.Model
-    HAVING COUNT(DISTINCT p.RunType) = 2
-  ) p
-  ON f.Model = p.Model AND f.JobReference = p.LatestJobRef
+  ) AS latest
+  ON f.Model = latest.Model AND f.JobReference = latest.LatestJobRef
   WHERE f.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
-) j
+) AS j
 GROUP BY
-  j.Model,
-  j.JobReference
+  j.Model
 ORDER BY
   j.Model;
