@@ -17,11 +17,17 @@ SELECT
   IFNULL(RunRecord.P99TTFT, 0) AS P99TTFT,
   IFNULL(RunRecord.P99ETEL, 0) AS P99ETEL,
   IFNULL(RunRecord.Throughput, 0) AS Throughput,
+  CASE
+    WHEN RunRecord.RunType = 'HOURLY' THEN 'torchxla'
+    WHEN RunRecord.RunType = 'HOURLY_TORCHAX' THEN 'torchax'
+    WHEN RunRecord.RunType = 'HOURLY_JAX' THEN 'jax'
+    ELSE 'unknown'
+  END AS Backend,
   PARSE_TIMESTAMP('%Y%m%d_%H%M%S', RunRecord.JobReference, 'America/Los_Angeles') AS JobReferenceTime
 FROM
   RunRecord
 WHERE
-  RunRecord.RunType in ('HOURLY', 'HOURLY_TORCHAX') 
+  RunRecord.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX') 
   AND RunRecord.Status IN ('COMPLETED',
     'FAILED')  
   AND RunRecord.Device LIKE 'v6e-%'
