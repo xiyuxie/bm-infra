@@ -8,6 +8,7 @@ SELECT
   RunRecord.Status,
   RunRecord.Device,
   RunRecord.RunType,
+  RunRecord.CreatedTime,
   IFNULL(RunRecord.MedianITL, 0) AS MedianITL,
   IFNULL(RunRecord.MedianTPOT, 0) AS MedianTPOT,
   IFNULL(RunRecord.MedianTTFT, 0) AS MedianTTFT,

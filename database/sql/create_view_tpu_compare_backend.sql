@@ -28,6 +28,7 @@ FROM (
       MAX(p.JobReference) AS LatestJobRef
     FROM HourlyRunAllTPU AS p
     WHERE p.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
+      AND p.CreatedTime <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 59 MINUTE)
     GROUP BY p.Model
   ) AS latest
   ON f.Model = latest.Model AND f.JobReference = latest.LatestJobRef
