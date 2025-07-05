@@ -3,10 +3,6 @@ ARG BASE_IMAGE="us-central1-docker.pkg.dev/tpu-pytorch-releases/docker/xla:night
 
 FROM $BASE_IMAGE
 
-ARG VLLM_TORCHAX_ENABLED=1
-ARG TPU_BACKEND_TYPE=torchax
-ARG VLLM_XLA_USE_SPMD=0
-
 WORKDIR /workspace/tpu_commons
 
 # Build tpu_commons
@@ -22,10 +18,5 @@ RUN python3 -m pip install -e . --no-deps
 
 # go back to vllm folder
 WORKDIR /workspace/vllm
-
-# setting the extra env
-ENV VLLM_TORCHAX_ENABLED=$VLLM_TORCHAX_ENABLED
-ENV TPU_BACKEND_TYPE=$TPU_BACKEND_TYPE
-ENV VLLM_XLA_USE_SPMD=$VLLM_XLA_USE_SPMD
 
 CMD ["/bin/bash"]

@@ -19,7 +19,7 @@ if ! TAGS=$(gcloud artifacts docker tags list "$GCP_REGION-docker.pkg.dev/$GCP_P
   exit 1
 fi
 
-if echo "$TAGS" | grep -qw "$CODE_HASH"; then
+if echo "$TAGS" | grep -Fxq "$CODE_HASH"; then
   echo "Remote image $image_tag already exists. Skipping build and push."
   popd
   exit 0

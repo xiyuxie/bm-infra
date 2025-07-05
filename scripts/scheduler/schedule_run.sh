@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # === Usage ===
-if [ "$#" -ne 4 ]; then
-  echo "Usage: $0 input.csv CODEHASH JOB_REFERENCE RUN_TYPE"
+if [ "$#" -ne 5 ]; then
+  echo "Usage: $0 input.csv CODEHASH JOB_REFERENCE RUN_TYPE EXTRA_ENVS"
   exit 1
 fi
 
@@ -10,6 +10,7 @@ CSV_FILE="$1"
 CODEHASH="$2"
 JOB_REFERENCE="$3"
 RUN_TYPE="$4"
+EXTRA_ENVS="$5"
 
 if [ ! -f "$CSV_FILE" ]; then
   echo "CSV file not found: $CSV_FILE"
@@ -51,11 +52,11 @@ tail -n +2 "$CSV_FILE" | while read -r line; do
     --sql="INSERT INTO RunRecord (
       RecordId, Status, CreatedTime, Device, Model, RunType, CodeHash,
       MaxNumSeqs, MaxNumBatchedTokens, TensorParallelSize, MaxModelLen,
-      Dataset, InputLen, OutputLen, LastUpdate, CreatedBy,JobReference, ExpectedETEL
+      Dataset, InputLen, OutputLen, LastUpdate, CreatedBy,JobReference, ExpectedETEL, ExtraEnvs
     ) VALUES (
       '$RECORD_ID', 'CREATED', PENDING_COMMIT_TIMESTAMP(), '$DEVICE', '$MODEL', '$RUN_TYPE', '$CODEHASH',
       $MAX_NUM_SEQS, $MAX_NUM_BATCHED_TOKENS, $TENSOR_PARALLEL_SIZE, $MAX_MODEL_LEN,
-      '$DATASET', $INPUT_LEN, $OUTPUT_LEN, PENDING_COMMIT_TIMESTAMP(), '$USER', '$JOB_REFERENCE',${EXPECTED_ETEL:-$VERY_LARGE_EXPECTED_ETEL}
+      '$DATASET', $INPUT_LEN, $OUTPUT_LEN, PENDING_COMMIT_TIMESTAMP(), '$USER', '$JOB_REFERENCE',${EXPECTED_ETEL:-$VERY_LARGE_EXPECTED_ETEL}, '$EXTRA_ENVS'
     );"  
   
   # If insert failed, just continue without publishing

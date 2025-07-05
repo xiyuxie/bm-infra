@@ -1,9 +1,26 @@
 #!/bin/bash
 set -euo pipefail
 
-# Check at least 1 argument is provided
+# Argument Explanation:
+#
+# 1. INPUT_CSV       - (Required) Path to the input CSV file to process.
+#
+# 2. CODE_HASH       - (Optional) A string representing the code version hash.
+#
+# 3. JOB_REFERENCE   - (Optional) Identifier for the job or run reference.
+#
+# 4. RUN_TYPE        - (Optional) Type of run or execution mode (e.g., HOURLY, AUTOTUNE).
+#
+# 5. REPO            - (Optional) Repository name or URL related to the job.
+#
+# 6. EXTRA_ENVS      - (Optional) Additional environment variables to set, formatted as
+#                     a semicolon-separated list of key=value pairs.
+#                     Example:
+#                       VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=1
+#
+#                     These variables can be parsed and exported within the script as needed.
 if [[ $# -lt 1 ]]; then
-    echo "Usage: $0 <INPUT_CSV> [CODE_HASH] [JOB_REFERENCE] [RUN_TYPE] [REPO]"
+    echo "Usage: $0 <INPUT_CSV> [CODE_HASH] [JOB_REFERENCE] [RUN_TYPE] [REPO] [EXTRA_ENVS]"
     exit 1
 fi
 
@@ -12,15 +29,10 @@ CODE_HASH="${2:-}"  # optional
 JOB_REFERENCE="${3:-}"
 RUN_TYPE="${4:-"MANUAL"}"
 REPO="${5:-"DEFAULT"}"
-TPU_COMMONS_TPU_BACKEND_TYPE="${6:-"torchax"}"
+EXTRA_ENVS="${6:-}"
 
 if [[ "$REPO" != "DEFAULT" && "$REPO" != "TPU_COMMONS" ]]; then
   echo "Error: REPO must be either DEFAULT or TPU_COMMONS, but got '$REPO'"
-  exit 1
-fi
-
-if [[ "$TPU_COMMONS_TPU_BACKEND_TYPE" != "torchax" && "$TPU_COMMONS_TPU_BACKEND_TYPE" != "jax" && "$TPU_COMMONS_TPU_BACKEND_TYPE" != "torchaxspmd" ]]; then
-  echo "Error: TPU_COMMONS_TPU_BACKEND_TYPE must be either torchax, torchaxspmd or jax, but got '$TPU_COMMONS_TPU_BACKEND_TYPE'"
   exit 1
 fi
 
@@ -74,8 +86,8 @@ if [[ "${SKIP_BUILD_IMAGE:-0}" != "1" ]]; then
     TORCHAX_HASH=$(clone_and_get_hash "https://github.com/pytorch/xla.git" "artifacts/xla" "$TORCHAX_HASH")
     echo "resolved TORCHAX_HASH: $TORCHAX_HASH"
 
-    ./scripts/scheduler/build_tpu_commons_image.sh "$VLLM_HASH" "$TPU_COMMONS_HASH" "$TORCHAX_HASH" "$TPU_COMMONS_TPU_BACKEND_TYPE"
-    CODE_HASH="${VLLM_HASH}-${TPU_COMMONS_HASH}-${TORCHAX_HASH}-${TPU_COMMONS_TPU_BACKEND_TYPE}"
+    ./scripts/scheduler/build_tpu_commons_image.sh "$VLLM_HASH" "$TPU_COMMONS_HASH" "$TORCHAX_HASH"
+    CODE_HASH="${VLLM_HASH}-${TPU_COMMONS_HASH}-${TORCHAX_HASH}"
   fi
 
 else
@@ -83,7 +95,7 @@ else
 fi
 
 echo "./scripts/scheduler/schedule_run.sh $INPUT_CSV $CODE_HASH $JOB_REFERENCE $RUN_TYPE"
-./scripts/scheduler/schedule_run.sh "$INPUT_CSV" "$CODE_HASH" "$JOB_REFERENCE" "$RUN_TYPE"
+./scripts/scheduler/schedule_run.sh "$INPUT_CSV" "$CODE_HASH" "$JOB_REFERENCE" "$RUN_TYPE" "$EXTRA_ENVS"
 
 echo "Runs created."
 
