@@ -77,6 +77,22 @@ docker run \
  -v /dev/shm:/dev/shm \
  $image_tag tail -f /dev/null
 
+# =============== temp solution ===============
+if [ "$DATASET" = "custom-token" ]; then
+  echo "use temp solution to hack custom-token dataset"
+
+  echo "copy dataset to container..."
+  docker cp artifacts/dataset "$CONTAINER_NAME:/workspace/"
+
+  echo docker cp scripts/agent/benchmark_serving.py "$CONTAINER_NAME:/workspace/vllm/benchmarks/benchmark_serving.py"
+  docker cp scripts/agent/benchmark_serving.py "$CONTAINER_NAME:/workspace/vllm/benchmarks/benchmark_serving.py"
+
+  echo docker cp scripts/agent/benchmark_dataset.py "$CONTAINER_NAME:/workspace/vllm/benchmarks/benchmark_dataset.py"
+  docker cp scripts/agent/benchmark_dataset.py "$CONTAINER_NAME:/workspace/vllm/benchmarks/benchmark_dataset.py"
+fi
+
+# ===============  temp solution ===============
+
 echo "copy script run_bm.sh to container..."
 docker cp scripts/agent/run_bm.sh "$CONTAINER_NAME:/workspace/vllm/run_bm.sh"
 
@@ -96,6 +112,9 @@ docker cp "$CONTAINER_NAME:/workspace/bm_log.txt" "$BM_LOG"
 
 throughput=$(grep "Request throughput (req/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
 echo "throughput for $TEST_NAME at $VLLM_HASH: $throughput"
+
+output_token_throughput=$(grep "Output token throughput (tok/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
+total_token_throughput=$(grep "Total Token throughput (tok/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
 
 
 echo "gsutil cp $LOG_ROOT/* $REMOTE_LOG_ROOT"
@@ -148,4 +167,6 @@ P99ITL=$P99ITL
 P99TPOT=$P99TPOT
 P99TTFT=$P99TTFT
 P99ETEL=$P99ETEL
+OutputTokenThroughput=$output_token_throughput
+TotalTokenThroughput=$total_token_throughput
 EOF
