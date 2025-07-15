@@ -58,7 +58,3 @@ TEST_NAME=static
 CONTAINER_NAME=vllm-tpu
 DOWNLOAD_DIR=/mnt/disks/persist
 EOF
-
-# copy datasets
-mkdir -p ./artifacts/dataset/
-gsutil cp gs://$GCS_BUCKET/dataset/*.* ./artifacts/dataset/

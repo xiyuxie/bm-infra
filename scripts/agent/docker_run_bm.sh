@@ -81,6 +81,9 @@ docker run \
 if [ "$DATASET" = "custom-token" ]; then
   echo "use temp solution to hack custom-token dataset"
 
+  mkdir -p ./artifacts/dataset/
+  gsutil -m cp gs://$GCS_BUCKET/dataset/*.* ./artifacts/dataset/
+
   echo "copy dataset to container..."
   docker cp artifacts/dataset "$CONTAINER_NAME:/workspace/"
 
