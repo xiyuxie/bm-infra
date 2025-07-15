@@ -16,8 +16,8 @@ else
   ./scripts/scheduler/create_job.sh ./cases/hourly_gpu_2.csv "" $TAG HOURLY
 fi
 
-echo "./scripts/scheduler/create_job.sh ./cases/case2.csv \"\" $TAG SPECIAL"
-./scripts/scheduler/create_job.sh ./cases/case2.csv "" $TAG SPECIAL
+echo "./scripts/scheduler/create_job.sh ./cases/case2.csv \"\" $TAG SPECIAL20250714"
+./scripts/scheduler/create_job.sh ./cases/case2.csv "" $TAG SPECIAL20250714
 
 # Run TPU Commons + TorchAX test.
 # Eventually, TorchAx and vLLM should run the same test case.
@@ -59,8 +59,8 @@ if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
   ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE
 
   # Adhoc
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv \"\" $TAG SPECIAL_TUNE "
-  ./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv "" $TAG SPECIAL_TUNE
+  echo "./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv \"\" $TAG TUNE_SPECIAL20250714 "
+  ./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv "" $TAG TUNE_SPECIAL20250714
 fi
 
 echo "./scripts/cleanup_docker.sh"
