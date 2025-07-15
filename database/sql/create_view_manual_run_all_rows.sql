@@ -27,10 +27,14 @@ SELECT
   RunRecord.P99ETEL,
   RunRecord.LastUpdate,
   RunRecord.ExpectedETEL,
+  RunRecord.OutputTokenThroughput,
+  RunRecord.TotalTokenThroughput,
   IFNULL(RunRecord.Throughput, 0) AS Throughput  
 FROM
   RunRecord
-WHERE
-  RunRecord.RunType NOT IN('HOURLY','AUTOTUNE')   
+WHERE NOT (
+  RunRecord.RunType LIKE 'HOURLY%' OR
+  RunRecord.RunType LIKE 'AUTOTUNE%'
+)
 ORDER BY
   RunRecord.JobReference;
