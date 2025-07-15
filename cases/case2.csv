@@ -7,4 +7,3 @@ v6e-8,mistralai/Mixtral-8x7B-v0.1,512,4096,8,2100,custom-token,1000,1000
 v6e-8,mistralai/Mixtral-8x7B-v0.1,512,4096,8,2200,custom-token,2048,128
 v6e-8,mistralai/Mixtral-8x7B-v0.1,512,4096,8,4200,custom-token,2048,2048
 v6e-8,mistralai/Mixtral-8x7B-v0.1,512,4096,8,6000,custom-token,5000,500
-v6e-8,mistralai/Mixtral-8x7B-v0.1,512,4096,8,22100,custom-token,20000,2000
