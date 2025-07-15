@@ -29,6 +29,7 @@ SELECT
   RunRecord.ExpectedETEL,
   RunRecord.OutputTokenThroughput,
   RunRecord.TotalTokenThroughput,
+  RunRecord.RunType,
   IFNULL(RunRecord.Throughput, 0) AS Throughput  
 FROM
   RunRecord

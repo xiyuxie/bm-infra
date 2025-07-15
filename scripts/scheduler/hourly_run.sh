@@ -52,15 +52,14 @@ if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
 
   # TODO(b/429439832): we ideally don't want to pin the vLLM version, but we want to keep it in sync with the TPU Commons-needed vLLM version
   echo "./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv \"3c545c0c3\" $TAG AUTOTUNE_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax\""
-  ./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv "3c545c0c3" $TAG AUTOTUNE_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"
+  ./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv "3c545c0c3" $TAG AUTOTUNE_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"  
 
   # Adhoc
   echo "./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv \"\" $TAG AUTOTUNE "
   ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE
-
-  # Adhoc
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv \"\" $TAG TUNE_SPECIAL20250714 "
-  ./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv "" $TAG TUNE_SPECIAL20250714
+  # Adhoc TUNE_SP20250714
+  echo "./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv \"\" $TAG TUNE_SP20250714 "
+  ./scripts/scheduler/create_job.sh ./cases/autotune_case2.csv "" $TAG TUNE_SP20250714
 fi
 
 echo "./scripts/cleanup_docker.sh"
