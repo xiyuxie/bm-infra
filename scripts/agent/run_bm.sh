@@ -117,6 +117,16 @@ run_benchmark(){
       --random-output-len $OUTPUT_LEN \
       --percentile-metrics ttft,tpot,itl,e2el \
       --ignore-eos > "$BM_LOG" 2>&1
+  elif [ "$DATASET" = "custom-token" ]; then
+    dataset_path="$WORKSPACE/dataset/${MODEL##*/}_${INPUT_LEN}_${OUTPUT_LEN}_tp${TENSOR_PARALLEL_SIZE}.json"
+    python benchmarks/benchmark_serving.py \
+      --backend vllm \
+      --model $MODEL \
+      --request-rate $request_rate \
+      --dataset-name custom-token \
+      --dataset-path $dataset_path \
+      --percentile-metrics ttft,tpot,itl,e2el \
+      --ignore-eos > "$BM_LOG" 2>&1
   else
     echo "Error: unsupported dataset '$DATASET'" > "$BM_LOG" 2>&1
     exit 1
