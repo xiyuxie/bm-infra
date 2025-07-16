@@ -31,8 +31,8 @@ RUN_TYPE="${4:-"MANUAL"}"
 REPO="${5:-"DEFAULT"}"
 EXTRA_ENVS="${6:-}"
 
-if [[ "$REPO" != "DEFAULT" && "$REPO" != "TPU_COMMONS" ]]; then
-  echo "Error: REPO must be either DEFAULT or TPU_COMMONS, but got '$REPO'"
+if [[ "$REPO" != "DEFAULT" && "$REPO" != "TPU_COMMONS" && "$REPO" != "TPU_COMMONS_TORCHAX" ]]; then
+  echo "Error: REPO must be one of: DEFAULT, TPU_COMMONS, or TPU_COMMONS_TORCHAX, but got '$REPO'"
   exit 1
 fi
 
@@ -77,8 +77,8 @@ if [[ "${SKIP_BUILD_IMAGE:-0}" != "1" ]]; then
   CODE_HASH=$VLLM_HASH
 
   # If additional image is needed
-  if [ "$REPO" = "TPU_COMMONS" ]; then
-    echo "build image for TPU_COMMON"
+  if [ "$REPO" = "TPU_COMMONS_TORCHAX" ]; then
+    echo "build image for TPU_COMMONS_TORCHAX"
 
     TPU_COMMONS_HASH=$(clone_and_get_hash "https://github.com/vllm-project/tpu_commons.git" "artifacts/tpu_commons" "$TPU_COMMONS_HASH")
     echo "resolved TPU_COMMONS_HASH: $TPU_COMMONS_HASH"
@@ -88,8 +88,16 @@ if [[ "${SKIP_BUILD_IMAGE:-0}" != "1" ]]; then
 
     ./scripts/scheduler/build_tpu_commons_image.sh "$VLLM_HASH" "$TPU_COMMONS_HASH" "$TORCHAX_HASH"
     CODE_HASH="${VLLM_HASH}-${TPU_COMMONS_HASH}-${TORCHAX_HASH}"
-  fi
+  elif [ "$REPO" = "TPU_COMMONS" ]; then
+    echo "build image for TPU_COMMONS only"
 
+    TPU_COMMONS_HASH=$(clone_and_get_hash "https://github.com/vllm-project/tpu_commons.git" "artifacts/tpu_commons" "$TPU_COMMONS_HASH")
+    echo "resolved TPU_COMMONS_HASH: $TPU_COMMONS_HASH"
+
+    ./scripts/scheduler/build_tpu_commons_image.sh "$VLLM_HASH" "$TPU_COMMONS_HASH" ""
+    CODE_HASH="${VLLM_HASH}-${TPU_COMMONS_HASH}-"
+
+  fi
 else
   echo "Skipping build image"
 fi
