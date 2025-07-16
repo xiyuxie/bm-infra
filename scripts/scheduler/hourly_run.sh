@@ -56,9 +56,10 @@ if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
   # Run Torchax + jax backend
   echo "./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv \"3c545c0c3\" $TAG AUTOTUNE_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
   ./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv "3c545c0c3" $TAG AUTOTUNE_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
+  
   # Adhoc
-  # echo "./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv \"\" $TAG AUTOTUNE "
-  # ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE  
+  echo "./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv \"\" $TAG AUTOTUNE "
+  ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE  
 fi
 
 echo "./scripts/cleanup_docker.sh"
