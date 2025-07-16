@@ -27,6 +27,15 @@ if docker image inspect "$IMAGE_TAG" &>/dev/null; then
     exit 0
 fi
 
+# 3. Determine Dockerfile
+if [ -z "$TORCHAX_HASH" ]; then
+  DOCKERFILE="../docker/DockerfileTPUCommon.tpu"
+  echo "Building without torchax"
+else
+  DOCKERFILE="../docker/DockerfileTPUCommonTorchax.tpu"
+  echo "Building with torchax"
+fi
+
 pushd artifacts
 
 VLLM_TARGET_DEVICE=tpu DOCKER_BUILDKIT=1 docker build \
@@ -36,7 +45,7 @@ VLLM_TARGET_DEVICE=tpu DOCKER_BUILDKIT=1 docker build \
  --build-arg BASE_IMAGE=$BASE_IMAGE \
  --tag $IMAGE_TAG \
  --progress plain \
- -f ../docker/DockerfileTPUCommon.tpu .
+ -f "$DOCKERFILE" .
 
 popd
 
