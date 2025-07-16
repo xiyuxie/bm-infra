@@ -22,13 +22,14 @@ SELECT
     WHEN RunRecord.RunType = 'HOURLY' THEN 'torchxla'
     WHEN RunRecord.RunType = 'HOURLY_TORCHAX' THEN 'torchax'
     WHEN RunRecord.RunType = 'HOURLY_JAX' THEN 'jax'
+    WHEN RunRecord.RunType = 'HOURLY_AX_JAX' THEN 'torchax-jax'
     ELSE 'unknown'
   END AS Backend,
   PARSE_TIMESTAMP('%Y%m%d_%H%M%S', RunRecord.JobReference, 'America/Los_Angeles') AS JobReferenceTime
 FROM
   RunRecord
 WHERE
-  RunRecord.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX') 
+  RunRecord.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX', 'HOURLY_AX_JAX') 
   AND RunRecord.Status IN ('COMPLETED',
     'FAILED')  
   AND RunRecord.Device LIKE 'v6e-%'

@@ -13,7 +13,8 @@ SELECT
   STRING_AGG(DISTINCT j.Device, ', ') AS Devices,
   IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourly,
   IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY_TORCHAX' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourlyTorchax,
-  IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY_JAX' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourlyJax
+  IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY_JAX' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourlyJax,
+  IFNULL(MAX(CASE WHEN j.RunType = 'HOURLY_AX_JAX' THEN j.Throughput ELSE NULL END), 0) AS ThroughputHourlyTorchaxJax
 FROM (
   SELECT
     f.Model,
@@ -27,12 +28,12 @@ FROM (
       p.Model,
       MAX(p.JobReference) AS LatestJobRef
     FROM HourlyRunAllTPU AS p
-    WHERE p.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
+    WHERE p.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX', 'HOURLY_AX_JAX')
       AND p.CreatedTime <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 59 MINUTE)
     GROUP BY p.Model
   ) AS latest
   ON f.Model = latest.Model AND f.JobReference = latest.LatestJobRef
-  WHERE f.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
+  WHERE f.RunType IN ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX','HOURLY_AX_JAX')
 ) AS j
 GROUP BY
   j.Model
