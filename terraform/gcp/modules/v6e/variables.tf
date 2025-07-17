@@ -17,11 +17,6 @@ variable "project_id" {
   description = "the project id of the v6e machines."
 }
 
-variable "controller_project_id" {
-  type        = string
-  description = "the project id of the controllers like spanner and queue."
-}
-
 variable "spanner_instance" {
   type        = string
 }
