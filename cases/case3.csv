@@ -1,2 +1,2 @@
 Device,Model,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen,ExpectedETEL
-v6e-1,Qwen/Qwen2.5-1.5B-Instruct,128,2048,1,2048,sonnet,1800,128
+v6e-8,google/gemma-3-27b-it,256,4096,8,1280,sonnet,1000,100
