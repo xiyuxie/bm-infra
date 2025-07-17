@@ -36,31 +36,31 @@ echo "./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv \"3c545c0c3\" $TA
 echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv \"3c545c0c3\" $TAG HOURLY_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
 ./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv "3c545c0c3" $TAG HOURLY_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
 
-if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
-  # vLLM
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune.csv \"\" $TAG AUTOTUNE"
-  ./scripts/scheduler/create_job.sh ./cases/autotune.csv "" $TAG AUTOTUNE
+# if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
+#   # vLLM
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune.csv \"\" $TAG AUTOTUNE"
+#   ./scripts/scheduler/create_job.sh ./cases/autotune.csv "" $TAG AUTOTUNE
 
-  # Torchax
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune_torchax.csv \"\" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX \"TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=0\""
-  ./scripts/scheduler/create_job.sh ./cases/autotune_torchax.csv "" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX "TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=0"
+#   # Torchax
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_torchax.csv \"\" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX \"TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=0\""
+#   ./scripts/scheduler/create_job.sh ./cases/autotune_torchax.csv "" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX "TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=0"
 
-  # Torchax spmd
-  echo "./scripts/scheduler/create_job.sh cases/autotune_torchaxspmd.csv \"\" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX \"TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=1\""
-  ./scripts/scheduler/create_job.sh cases/autotune_torchaxspmd.csv "" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX "TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=1"
+#   # Torchax spmd
+#   echo "./scripts/scheduler/create_job.sh cases/autotune_torchaxspmd.csv \"\" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX \"TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=1\""
+#   ./scripts/scheduler/create_job.sh cases/autotune_torchaxspmd.csv "" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX "TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=1"
 
-  # TODO(b/429439832): we ideally don't want to pin the vLLM version, but we want to keep it in sync with the TPU Commons-needed vLLM version
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv \"3c545c0c3\" $TAG AUTOTUNE_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax\""
-  ./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv "3c545c0c3" $TAG AUTOTUNE_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"  
+#   # TODO(b/429439832): we ideally don't want to pin the vLLM version, but we want to keep it in sync with the TPU Commons-needed vLLM version
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv \"3c545c0c3\" $TAG AUTOTUNE_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax\""
+#   ./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv "3c545c0c3" $TAG AUTOTUNE_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"  
 
-  # Run Torchax + jax backend
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv \"3c545c0c3\" $TAG AUTOTUNE_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
-  ./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv "3c545c0c3" $TAG AUTOTUNE_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
+#   # Run Torchax + jax backend
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv \"3c545c0c3\" $TAG AUTOTUNE_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
+#   ./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv "3c545c0c3" $TAG AUTOTUNE_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
   
-  # Adhoc
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv \"\" $TAG AUTOTUNE "
-  ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE  
-fi
+#   # Adhoc
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv \"\" $TAG AUTOTUNE "
+#   ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE  
+# fi
 
 echo "./scripts/cleanup_docker.sh"
 ./scripts/cleanup_docker.sh
