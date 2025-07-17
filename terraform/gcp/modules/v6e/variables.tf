@@ -10,11 +10,17 @@ variable "tpu_zone" {
 
 variable "region" {
     type        = string
+    description = "the region of the v6e machines."
 }
 
 variable "project_id" {
   type        = string
   description = "the project id of the v6e machines."
+}
+
+variable "controller_region" {
+    type        = string
+    description = "the region id of the controllers like spanner and queue."
 }
 
 variable "controller_project_id" {
