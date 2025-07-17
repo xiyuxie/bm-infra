@@ -20,7 +20,7 @@ if [ -n "$TARGET_COMMIT" ]; then
   fi
 fi
 
-echo "model: $MODEL"
+echo "model: $MODEL" > "$VLLM_LOG" 2>&1
 echo
 
 #
@@ -35,7 +35,7 @@ pip install datasets
 #
 # create sonnet_4x
 #
-echo "Create sonnet_4x.txt"
+echo "Create sonnet_4x.txt" > "$VLLM_LOG" 2>&1
 echo "" > benchmarks/sonnet_4x.txt
 for _ in {1..4}
  do
@@ -45,7 +45,7 @@ done
 #
 # start vllm service in backend
 #
-echo "lanching vllm..."
+echo "lanching vllm..." > "$VLLM_LOG" 2>&1
 echo "logging to $VLLM_LOG"
 echo
 
@@ -66,7 +66,7 @@ VLLM_USE_V1=1 vllm serve $MODEL \
  --max-model-len $MAX_MODEL_LEN $EXTRA_ARGS> "$VLLM_LOG" 2>&1 &
 
 
-echo "wait for 20 minutes.."
+echo "wait for 20 minutes.." > "$VLLM_LOG" 2>&1
 echo
 # sleep 1200
 # wait for 10 minutes...
