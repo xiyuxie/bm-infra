@@ -52,7 +52,7 @@ echo
 EXTRA_ARGS=""
 if [[ "$MODEL" == "google/gemma-3-27b-it" ]]; then
   echo "google/gemma-3-27b-it"
-  EXTRA_ARGS="--limit-mm-per-prompt image=0"
+  EXTRA_ARGS="--limit-mm-per-prompt {\"image\":0}"
 fi
 
 VLLM_USE_V1=1 vllm serve $MODEL \
