@@ -31,7 +31,7 @@ variable "v6e_1_count" {
 }
 
 variable "v6e_4_count" {
-  default     = 1
+  default     = 0
 }
 
 variable "v6e_8_count" {

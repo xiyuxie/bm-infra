@@ -1,3 +1,5 @@
+data "google_project" "current" {}
+
 resource "google_compute_disk" "large_disk" {
   provider = google-beta
   count    = var.tpu_count
@@ -18,7 +20,7 @@ resource "google_tpu_v2_vm" "tpu_v6" {
   accelerator_type = "${var.accelerator_type}"
 
   network_config {
-    network           = "projects/${var.project_id}/global/networks/default"
+    network           = "projects/${data.google_project.current.project_id}/global/networks/default"                         
     enable_external_ips = true
   }
 
