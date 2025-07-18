@@ -1,55 +1,5 @@
-module "v6e-1-queue" {
-  source = "./modules/queue"
-  providers = {
-    google = google
-  }
-
-  purpose              = var.purpose
-  accelerator_type     = "v6e-1"
-}
-
-module "v6e-4-queue" {
-  source = "./modules/queue"
-  providers = {
-    google = google
-  }
-
-  purpose              = var.purpose
-  accelerator_type     = "v6e-4"
-}
-
-module "v6e-8-queue" {
-  source = "./modules/queue"
-  providers = {
-    google = google
-  }
-
-  purpose              = var.purpose
-  accelerator_type     = "v6e-8"
-}
-
-module "h100-8-queue" {
-  source = "./modules/queue"
-  providers = {
-    google = google
-  }
-
-  purpose              = var.purpose
-  accelerator_type     = "h100-8"
-}
-
-module "a100-1-queue" {
-  source = "./modules/queue"
-  providers = {
-    google = google
-  }
-
-  purpose              = var.purpose
-  accelerator_type     = "a100-1"
-}
-
 module "v6e-1" {
-  source = "./modules/v6e"
+  source = "../modules/v6e"
   providers = {
     google-beta = google-beta
   }
@@ -62,12 +12,12 @@ module "v6e-1" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
 }
 
 module "v6e-4" {
-  source = "./modules/v6e"
+  source = "../modules/v6e"
   providers = {
     google-beta = google-beta
   }
@@ -80,12 +30,12 @@ module "v6e-4" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
 }
 
 module "v6e-8" {
-  source = "./modules/v6e"
+  source = "../modules/v6e"
   providers = {
     google-beta = google-beta
   }
@@ -99,6 +49,6 @@ module "v6e-8" {
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
   mnt_disk_gb          = 2048
-  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
 }
