@@ -50,7 +50,14 @@ variable "mnt_disk_gb" {
   default     = 512
 }
 
+variable "instance_name_offset" {
+  type        = number
+  default     = 0
+  description = "instance name offset so that we can distinguish machines from different project or region."
+}
+
 variable "branch_hash" {
   type        = string
   description = "commit hash of bm-infra branch."
 }
+

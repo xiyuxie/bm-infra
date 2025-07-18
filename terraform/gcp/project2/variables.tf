@@ -6,8 +6,8 @@ variable "region" {
     default = "southamerica-west1"
 }
 
-variable "zone" {
-    default = "southamerica-west1-a"
+variable "tpu_zone" {
+    default = "asia-east1-a"
 }
 
 variable "purpose" {
@@ -31,11 +31,17 @@ variable "v6e_1_count" {
 }
 
 variable "v6e_4_count" {
-  default     = 2
+  default     = 1
 }
 
 variable "v6e_8_count" {
   default     = 0
+}
+
+variable "instance_name_offset" {
+  type        = number
+  default     = 100
+  description = "instance name offset so that we can distinguish machines from different project or region."
 }
 
 variable "branch_hash" {

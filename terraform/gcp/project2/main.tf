@@ -6,7 +6,7 @@ module "v6e-1" {
   purpose              = var.purpose
   accelerator_type     = "v6e-1"
   tpu_count            = var.v6e_1_count
-  tpu_zone             = var.zone
+  tpu_zone             = var.tpu_zone
   region               = var.region
   project_id           = var.project_id
   spanner_instance     = var.spanner_instance
@@ -14,6 +14,7 @@ module "v6e-1" {
   gcs_bucket           = var.gcs_bucket
   startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  instance_name_offset = var.instance_name_offset
 }
 
 module "v6e-4" {
@@ -24,7 +25,7 @@ module "v6e-4" {
   purpose              = var.purpose
   accelerator_type     = "v6e-4"
   tpu_count            = var.v6e_4_count
-  tpu_zone             = var.zone
+  tpu_zone             = var.tpu_zone
   region               = var.region
   project_id           = var.project_id
   spanner_instance     = var.spanner_instance
@@ -32,6 +33,7 @@ module "v6e-4" {
   gcs_bucket           = var.gcs_bucket
   startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  instance_name_offset = var.instance_name_offset
 }
 
 module "v6e-8" {
@@ -42,7 +44,7 @@ module "v6e-8" {
   purpose              = var.purpose
   accelerator_type     = "v6e-8"
   tpu_count            = var.v6e_8_count
-  tpu_zone             = var.zone
+  tpu_zone             = var.tpu_zone
   region               = var.region
   project_id           = var.project_id
   spanner_instance     = var.spanner_instance
@@ -51,4 +53,5 @@ module "v6e-8" {
   mnt_disk_gb          = 2048
   startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  instance_name_offset = var.instance_name_offset
 }
