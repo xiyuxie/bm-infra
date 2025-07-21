@@ -50,4 +50,10 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member="user:$USER_EMAIL" \
   --role="roles/spanner.databaseReader"
 
+# 4. Read GCS buckets
+echo "→ Granting GCS read access..."
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="user:$USER_EMAIL" \
+  --role="roles/storage.objectViewer"
+
 echo "All permissions granted successfully."
