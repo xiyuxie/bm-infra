@@ -1,2 +1,2 @@
 Device,Model,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen,ExpectedETEL
-v6e-8,Qwen/Qwen3-32B,256,2048,8,2048,sonnet,1800,128
+v6e-8,mistralai/Mixtral-8x7B-Instruct-v0.1,512,4096,8,2048,sonnet,1800,128

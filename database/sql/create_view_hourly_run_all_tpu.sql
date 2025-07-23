@@ -18,6 +18,8 @@ SELECT
   IFNULL(RunRecord.P99TTFT, 0) AS P99TTFT,
   IFNULL(RunRecord.P99ETEL, 0) AS P99ETEL,
   IFNULL(RunRecord.Throughput, 0) AS Throughput,
+  IFNULL(RunRecord.OutputTokenThroughput, 0) AS OutputTokenThroughput,
+  IFNULL(RunRecord.TotalTokenThroughput, 0) AS TotalTokenThroughput,
   CASE
     WHEN RunRecord.RunType = 'HOURLY' THEN 'torchxla'
     WHEN RunRecord.RunType = 'HOURLY_TORCHAX' THEN 'torchax'
