@@ -61,3 +61,8 @@ variable "branch_hash" {
   description = "commit hash of bm-infra branch."
 }
 
+variable "reserved" {
+  description = "if use reserved tpu resource"
+  type        = bool
+  default     = true
+}

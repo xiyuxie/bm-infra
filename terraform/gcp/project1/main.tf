@@ -64,6 +64,7 @@ module "v6e-1" {
   gcs_bucket           = var.gcs_bucket
   startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  reserved             = true
 }
 
 module "v6e-4" {
@@ -82,6 +83,7 @@ module "v6e-4" {
   gcs_bucket           = var.gcs_bucket
   startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  reserved             = true
 }
 
 module "v6e-8" {
@@ -101,4 +103,5 @@ module "v6e-8" {
   mnt_disk_gb          = 2048
   startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  reserved             = true
 }
