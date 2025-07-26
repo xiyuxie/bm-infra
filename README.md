@@ -178,3 +178,51 @@ popd
 ### To increase or decrease the capacity
 
 Change the machine number number in ./terraform/gcp/main.tf
+
+
+### After creating new project
+
+#### Enable API
+
+```
+gcloud services enable spanner.googleapis.com --project=<new project>
+gcloud services enable storage.googleapis.com --project=<new project>
+gcloud services enable pubsub.googleapis.com --project=<new project>
+gcloud services enable secretmanager.googleapis.com --project=<new project>
+```
+
+#### Give permission to access spanner, pubsub and gcs
+
+```
+gcloud projects add-iam-policy-binding cloud-tpu-inference-test \
+  --member="serviceAccount:<service-account>@developer.gserviceaccount.com" \
+  --role="roles/storage.objectViewer" \
+  --role="roles/pubsub.subscriber" \
+  --role="roles/spanner.databaseUser"
+```
+
+### Give permission to GCS
+
+```
+gsutil iam ch \
+  serviceAccount:<service-account>@developer.gserviceaccount.com:objectAdmin \
+  gs://vllm-cb-storage2
+```
+
+#### Give permission to access artifact registry
+
+```
+gcloud artifacts repositories add-iam-policy-binding vllm-tpu-bm \
+  --location=southamerica-west1 \
+  --project=cloud-tpu-inference-test \
+  --member="serviceAccount:<service-account>@developer.gserviceaccount.com" \
+  --role="roles/artifactregistry.reader"
+```
+
+#### give permission to secrete
+
+```
+gcloud secrets add-iam-policy-binding bm-agent-hf-token \
+  --member="serviceAccount:<service-account>@developer.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+```

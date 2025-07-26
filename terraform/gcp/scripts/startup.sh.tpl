@@ -9,7 +9,7 @@ grep -q "^GCP_INSTANCE_NAME=" /etc/environment || echo "GCP_INSTANCE_NAME=${inst
 grep -q "^GCS_BUCKET=" /etc/environment || echo "GCS_BUCKET=${gcs_bucket}" | sudo tee -a /etc/environment
 grep -q "^GCP_QUEUE=" /etc/environment || echo "GCP_QUEUE=vllm-${purpose}-queue-${accelerator_type}" | sudo tee -a /etc/environment
 if ! grep -q "^HF_TOKEN=" /etc/environment; then
-  gcloud secrets versions access latest --secret=bm-agent-hf-token --quiet | \
+  gcloud secrets versions access latest --secret=bm-agent-hf-token --project=${project_id} --quiet | \
   sudo tee -a /etc/environment > /dev/null <<< "HF_TOKEN=$(cat)"
 fi
 
