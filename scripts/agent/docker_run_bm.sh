@@ -57,6 +57,17 @@ if ! mountpoint -q "$DOWNLOAD_DIR"; then
     exit 1
 fi
 
+
+# Check and trim
+# Example value
+# TARGET_COMMIT="bb81182d3_de509ae8e"
+# TARGET_COMMIT="bb81182d3"
+
+TARGET_COMMIT=$VLLM_HASH
+if [[ "$TARGET_COMMIT" == *_* ]]; then
+  TARGET_COMMIT="${VLLM_HASH%%_*}"
+fi
+
 echo "Run model $MODEL"
 echo
 
@@ -66,7 +77,7 @@ docker run \
  -v $DOWNLOAD_DIR:$DOWNLOAD_DIR \
  --env-file $ENV_FILE \
  -e HF_TOKEN="$HF_TOKEN" \
- -e TARGET_COMMIT=$VLLM_HASH \
+ -e TARGET_COMMIT=$TARGET_COMMIT \
  -e MODEL=$MODEL \
  -e DATASET=$DATASET \
  -e WORKSPACE=/workspace \

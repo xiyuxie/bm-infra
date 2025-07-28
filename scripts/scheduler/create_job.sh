@@ -71,6 +71,24 @@ if [[ "${SKIP_BUILD_IMAGE:-0}" != "1" ]]; then
   VLLM_HASH=$(clone_and_get_hash "https://github.com/vllm-project/vllm.git" "artifacts/vllm" "$VLLM_HASH")
   echo "resolved VLLM_HASH: $VLLM_HASH"
 
+  if [[ "${LOCAL_PATCH:-0}" != "1" ]]; then
+    echo "Update the vllm locally."
+    
+    echo "bash ./tools/patch_core.sh"
+    bash ./tools/patch_core.sh
+
+    echo "pushd ./artifacts/vllm"
+    pushd ./artifacts/vllm
+    git add .
+    git commit -m "temp patch." -s
+
+    NEW_VLLM_HASH=$(git rev-parse --short HEAD)
+
+    # RealHash_BaseHash
+    VLLM_HASH="${NEW_VLLM_HASH}_${VLLM_HASH}"    
+    popd
+  fi
+
   echo "./scripts/scheduler/build_image.sh $VLLM_HASH"
   ./scripts/scheduler/build_image.sh "$VLLM_HASH"
 
