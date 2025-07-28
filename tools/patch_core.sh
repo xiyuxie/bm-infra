@@ -4,8 +4,7 @@
 # while preserving the line's original indentation.
 
 # Define the target file
-TARGET_FILE="vllm/vllm/v1/engine/core.py"
-TEMP_FILE="core.py.tmp"
+TARGET_FILE="./artifacts/vllm/vllm/v1/engine/core.py"
 
 # --- Validation ---
 # Check if the target file exists
@@ -36,9 +35,13 @@ if cmp -s "$TARGET_FILE" "$TARGET_FILE.bak"; then
     echo "Could not find the target line in '$TARGET_FILE'. No changes were made."
     # Clean up the unnecessary backup file
     rm "$TARGET_FILE.bak"
+    exit 1
 else
     echo "Successfully updated '$TARGET_FILE'."
     echo "A backup of the original has been saved as '$TARGET_FILE.bak'."
+
+    echo "Delete the '$TARGET_FILE.bak'."
+    rm "$TARGET_FILE.bak"
 fi
 
 exit 0
