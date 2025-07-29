@@ -179,10 +179,21 @@ popd
 
 Change the machine number number in ./terraform/gcp/main.tf
 
+## The Code Hash
 
-### After creating new project
+Format is `A[_B]-[C]-[D]`.  
 
-#### Enable API
+A: The vllm repo hash. 
+
+B: If exists, it is the vllm main branch official head. If it exists, it indicate the A is a local commit. 
+
+C: TPU_COMMONS branch hash. 
+
+D: Torch XLA branch hash.
+
+## After creating new project
+
+### Enable API
 
 ```
 gcloud services enable spanner.googleapis.com --project=<new project>
@@ -191,7 +202,7 @@ gcloud services enable pubsub.googleapis.com --project=<new project>
 gcloud services enable secretmanager.googleapis.com --project=<new project>
 ```
 
-#### Give permission to access spanner, pubsub and gcs
+### Give permission to access spanner, pubsub and gcs
 
 ```
 gcloud projects add-iam-policy-binding cloud-tpu-inference-test \
@@ -209,7 +220,7 @@ gsutil iam ch \
   gs://vllm-cb-storage2
 ```
 
-#### Give permission to access artifact registry
+### Give permission to access artifact registry
 
 ```
 gcloud artifacts repositories add-iam-policy-binding vllm-tpu-bm \
@@ -219,10 +230,12 @@ gcloud artifacts repositories add-iam-policy-binding vllm-tpu-bm \
   --role="roles/artifactregistry.reader"
 ```
 
-#### give permission to secrete
+### give permission to secrete
 
 ```
 gcloud secrets add-iam-policy-binding bm-agent-hf-token \
   --member="serviceAccount:<service-account>@developer.gserviceaccount.com" \
   --role="roles/secretmanager.secretAccessor"
 ```
+
+

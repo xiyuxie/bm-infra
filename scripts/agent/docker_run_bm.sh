@@ -62,10 +62,9 @@ fi
 # Example value
 # TARGET_COMMIT="bb81182d3_de509ae8e"
 # TARGET_COMMIT="bb81182d3"
-
 TARGET_COMMIT=$VLLM_HASH
 if [[ "$TARGET_COMMIT" == *_* ]]; then
-  TARGET_COMMIT="${VLLM_HASH%%_*}"
+  TARGET_COMMIT="${TARGET_COMMIT%%_*}"
 fi
 
 echo "Run model $MODEL"
