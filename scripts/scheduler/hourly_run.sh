@@ -29,12 +29,12 @@ echo "./scripts/scheduler/create_job.sh cases/hourly_torchaxspmd.csv \"\" $TAG H
 # Eventually, JAX and vLLM should run the same test case.
 # for now, we start from v6e-1.
 # TODO(b/429439832): we ideally don't want to pin the vLLM version, but we want to keep it in sync with the TPU Commons-needed vLLM version
-echo "./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv \"0f199f197\" $TAG HOURLY_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax\""
-./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv "0f199f197" $TAG HOURLY_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"
+echo "./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv \"\" $TAG HOURLY_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax\""
+./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv "" $TAG HOURLY_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"
 
 # Run Torchax + jax backend
-echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv \"0f199f197\" $TAG HOURLY_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
-./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv "0f199f197" $TAG HOURLY_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
+echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv \"\" $TAG HOURLY_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
+./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv "" $TAG HOURLY_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
 
 # if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
 #   # vLLM
@@ -50,12 +50,12 @@ echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv \"0f199f1
 #   ./scripts/scheduler/create_job.sh cases/autotune_torchaxspmd.csv "" $TAG AUTOTUNE_TORCHAX TPU_COMMONS_TORCHAX "TPU_BACKEND_TYPE=torchax;VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=1"
 
 #   # TODO(b/429439832): we ideally don't want to pin the vLLM version, but we want to keep it in sync with the TPU Commons-needed vLLM version
-#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv \"0f199f197\" $TAG AUTOTUNE_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax\""
-#   ./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv "0f199f197" $TAG AUTOTUNE_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv \"\" $TAG AUTOTUNE_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax\""
+#   ./scripts/scheduler/create_job.sh ./cases/autotune_jax.csv "" $TAG AUTOTUNE_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax"
 
 #   # Run Torchax + jax backend
-#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv \"0f199f197\" $TAG AUTOTUNE_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
-#   ./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv "0f199f197" $TAG AUTOTUNE_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv \"\" $TAG AUTOTUNE_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
+#   ./scripts/scheduler/create_job.sh ./cases/autotune_torchax_jax.csv "" $TAG AUTOTUNE_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
 
 #   # Adhoc
 #   echo "./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv \"\" $TAG AUTOTUNE "
