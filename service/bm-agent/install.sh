@@ -58,6 +58,10 @@ if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then
     "$MINICONDA_DIR/bin/conda" init bash
   fi
 
+  # Accept Terms of Service for required channels
+  "$MINICONDA_DIR/bin/conda" tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+  "$MINICONDA_DIR/bin/conda" tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
   echo "Miniconda installation complete."
 
 EOF
