@@ -48,6 +48,16 @@ module "a100-1-queue" {
   accelerator_type     = "a100-1"
 }
 
+module "b200-8-queue" {
+  source = "../modules/queue"
+  providers = {
+    google = google
+  }
+
+  purpose              = var.purpose
+  accelerator_type     = "b200-8"
+}
+
 module "v6e-1" {
   source = "../modules/v6e"
   providers = {
