@@ -65,5 +65,9 @@ if __name__ == "__main__":
         sweep_config={
             "MaxNumSeqs": [64, 128, 256, 512],
             "MaxNumBatchedTokens": [64, 128, 256, 512, 1024, 2048, 4096],
+
+            # adhock sweep
+            "NumPrompts": [1000, 2000, 3000, 5000],
+            "ExpectedETEL": [500, 1000]
         }
     )

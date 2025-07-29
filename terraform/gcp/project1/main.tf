@@ -1,5 +1,5 @@
 module "v6e-1-queue" {
-  source = "./modules/queue"
+  source = "../modules/queue"
   providers = {
     google = google
   }
@@ -9,7 +9,7 @@ module "v6e-1-queue" {
 }
 
 module "v6e-4-queue" {
-  source = "./modules/queue"
+  source = "../modules/queue"
   providers = {
     google = google
   }
@@ -19,7 +19,7 @@ module "v6e-4-queue" {
 }
 
 module "v6e-8-queue" {
-  source = "./modules/queue"
+  source = "../modules/queue"
   providers = {
     google = google
   }
@@ -29,7 +29,7 @@ module "v6e-8-queue" {
 }
 
 module "h100-8-queue" {
-  source = "./modules/queue"
+  source = "../modules/queue"
   providers = {
     google = google
   }
@@ -39,7 +39,7 @@ module "h100-8-queue" {
 }
 
 module "a100-1-queue" {
-  source = "./modules/queue"
+  source = "../modules/queue"
   providers = {
     google = google
   }
@@ -49,7 +49,7 @@ module "a100-1-queue" {
 }
 
 module "v6e-1" {
-  source = "./modules/v6e"
+  source = "../modules/v6e"
   providers = {
     google-beta = google-beta
   }
@@ -62,12 +62,13 @@ module "v6e-1" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  reserved             = true
 }
 
 module "v6e-4" {
-  source = "./modules/v6e"
+  source = "../modules/v6e"
   providers = {
     google-beta = google-beta
   }
@@ -80,12 +81,13 @@ module "v6e-4" {
   spanner_instance     = var.spanner_instance
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
-  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  reserved             = true
 }
 
 module "v6e-8" {
-  source = "./modules/v6e"
+  source = "../modules/v6e"
   providers = {
     google-beta = google-beta
   }
@@ -99,6 +101,7 @@ module "v6e-8" {
   spanner_db           = var.spanner_db
   gcs_bucket           = var.gcs_bucket
   mnt_disk_gb          = 2048
-  startup_script_path  = "${path.module}/scripts/startup.sh.tpl"
+  startup_script_path  = "${path.module}/../scripts/startup.sh.tpl"
   branch_hash          = var.branch_hash
+  reserved             = true
 }

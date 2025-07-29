@@ -10,11 +10,12 @@ variable "tpu_zone" {
 
 variable "region" {
     type        = string
+    description = "the region of controller like spanner and pubsub."
 }
 
 variable "project_id" {
   type        = string
-  description = "the project id of the v6e machines."
+  description = "the project id of controller like spanner and pubsub."
 }
 
 variable "spanner_instance" {
@@ -49,7 +50,19 @@ variable "mnt_disk_gb" {
   default     = 512
 }
 
+variable "instance_name_offset" {
+  type        = number
+  default     = 0
+  description = "instance name offset so that we can distinguish machines from different project or region."
+}
+
 variable "branch_hash" {
   type        = string
   description = "commit hash of bm-infra branch."
+}
+
+variable "reserved" {
+  description = "if use reserved tpu resource"
+  type        = bool
+  default     = true
 }
