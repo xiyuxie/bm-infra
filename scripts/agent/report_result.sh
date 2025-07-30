@@ -33,7 +33,9 @@ fi
 assignments=""
 while IFS='=' read -r key value; do
   if [[ -n "$key" && -n "$value" ]]; then
-    if [[ "$value" =~ ^[0-9.]+$ ]]; then
+    if [[ "$key" == "AccuracyMetrics" ]]; then
+      assignments+="${key}=JSON '${value}', "
+    elif [[ "$value" =~ ^[0-9.]+$ ]]; then
       assignments+="${key}=${value}, "
     else
       assignments+="${key}='${value}', "
