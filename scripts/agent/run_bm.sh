@@ -32,15 +32,14 @@ mkdir "$WORKSPACE/log"
 pip install pandas
 pip install datasets
 
-#
-# create sonnet_4x
-#
-echo "Create sonnet_4x.txt"
-echo "" > benchmarks/sonnet_4x.txt
-for _ in {1..4}
- do
-  cat benchmarks/sonnet.txt >> benchmarks/sonnet_4x.txt
-done
+if [ "$DATASET" = "sonnet" ]; then
+  echo "Create sonnet_4x.txt"
+  echo "" > benchmarks/sonnet_4x.txt
+  for _ in {1..4}
+   do
+    cat benchmarks/sonnet.txt >> benchmarks/sonnet_4x.txt
+  done
+fi
 
 #
 # start vllm service in backend
@@ -85,7 +84,7 @@ for i in {1..120}; do
 done
 
 EXPECTED_ETEL=${EXPECTED_ETEL:-3600000}
-NUM_PROMTES=${NUM_PROMPTS:-1000}
+NUM_PROMPTS=${NUM_PROMPTS:-1000}
 
 run_benchmark(){  
   #
@@ -105,7 +104,7 @@ run_benchmark(){
       --dataset-path benchmarks/sonnet_4x.txt \
       --sonnet-input-len $INPUT_LEN \
       --sonnet-output-len $OUTPUT_LEN \
-      --num-prompts $NUM_PROMTES \
+      --num-prompts ${NUM_PROMPTS} \
       --percentile-metrics ttft,tpot,itl,e2el \
       --ignore-eos > "$BM_LOG" 2>&1
 
@@ -117,7 +116,19 @@ run_benchmark(){
       --dataset-name random \
       --random-input-len $INPUT_LEN \
       --random-output-len $OUTPUT_LEN \
-      --num-prompts $NUM_PROMTES \
+      --num-prompts ${NUM_PROMPTS} \
+      --percentile-metrics ttft,tpot,itl,e2el \
+      --ignore-eos > "$BM_LOG" 2>&1
+  elif [ "$DATASET" = "mmlu" ]; then
+    python benchmarks/benchmark_serving.py \
+      --backend vllm \
+      --model $MODEL \
+      --request-rate $request_rate \
+      --dataset-name mmlu \
+      --dataset-path /workspace/dataset \
+      --mmlu-num-shots 5 \
+      --mmlu-method HELM \
+      --num-prompts ${NUM_PROMPTS} \
       --percentile-metrics ttft,tpot,itl,e2el \
       --ignore-eos > "$BM_LOG" 2>&1
   elif [ "$DATASET" = "custom-token" ]; then
@@ -128,7 +139,7 @@ run_benchmark(){
       --request-rate $request_rate \
       --dataset-name custom-token \
       --dataset-path $dataset_path \
-      --num-prompts $NUM_PROMTES \
+      --num-prompts ${NUM_PROMPTS} \
       --percentile-metrics ttft,tpot,itl,e2el \
       --ignore-eos > "$BM_LOG" 2>&1
   else
@@ -141,12 +152,10 @@ run_benchmark(){
 
   throughput=$(grep "Request throughput (req/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
   p99_e2el=$(grep "P99 E2EL (ms):" "$BM_LOG" | awk '{print $NF}')
-
   echo "throughput: $throughput, P99 E2EL:$p99_e2el"
   echo
-
-  # return
   echo "$throughput $p99_e2el"
+  
 }
 read throughput p99_e2el < <(run_benchmark "inf" | tail -n 1) 
 
