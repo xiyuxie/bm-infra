@@ -87,6 +87,14 @@ v6e-8,Qwen/Qwen2.5-32B,512,512,1,2048,sonnet,1800,128
 v6e-8,Qwen/Qwen2.5-32B,512,1024,1,2048,sonnet,1800,128
 v6e-8,Qwen/Qwen2.5-32B,512,2048,1,2048,sonnet,1800,128
 v6e-8,Qwen/Qwen2.5-32B,512,4096,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,512,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,1024,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,2048,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,4096,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,512,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,1024,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,2048,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,4096,1,2048,sonnet,1800,128
 v6e-1,meta-llama/Llama-3.1-8B-Instruct,64,64,1,2048,sonnet,1800,128
 v6e-1,meta-llama/Llama-3.1-8B-Instruct,64,128,1,2048,sonnet,1800,128
 v6e-1,meta-llama/Llama-3.1-8B-Instruct,64,256,1,2048,sonnet,1800,128

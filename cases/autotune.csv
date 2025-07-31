@@ -23,6 +23,14 @@ v6e-1,Qwen/Qwen3-8B,256,512,1,2048,sonnet,1800,128
 v6e-1,Qwen/Qwen3-8B,256,1024,1,2048,sonnet,1800,128
 v6e-1,Qwen/Qwen3-8B,256,2048,1,2048,sonnet,1800,128
 v6e-1,Qwen/Qwen3-8B,256,4096,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,512,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,1024,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,2048,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,128,4096,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,512,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,1024,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,2048,1,2048,sonnet,1800,128
+v6e-1,Qwen/Qwen3-4B,256,4096,1,2048,sonnet,1800,128
 v6e-8,Qwen/Qwen3-32B,128,512,8,2048,sonnet,1800,128
 v6e-8,Qwen/Qwen3-32B,128,1024,8,2048,sonnet,1800,128
 v6e-8,Qwen/Qwen3-32B,128,2048,8,2048,sonnet,1800,128
