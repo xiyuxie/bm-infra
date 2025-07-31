@@ -142,6 +142,24 @@ run_benchmark(){
       --num-prompts ${NUM_PROMPTS} \
       --percentile-metrics ttft,tpot,itl,e2el \
       --ignore-eos > "$BM_LOG" 2>&1
+  elif [ "$DATASET" = "sharegpt" ]; then
+    dataset_path="$WORKSPACE/dataset/ShareGPT_V3_unfiltered_cleaned_split.json"
+
+    if [ "$INPUT_LEN" -gt 0 ]; then
+      echo "Please set INPUT_LEN to 0 for sharegpt dataset because it is not used." > "$BM_LOG" 2>&1      
+      exit 1
+    fi
+    
+    python benchmarks/benchmark_serving.py \
+      --backend vllm \
+      --model $MODEL \
+      --request-rate $request_rate \
+      --dataset-name sharegpt \
+      --dataset-path $dataset_path \
+      --sharegpt-output=len $OUTPUT_LEN \
+      --num-prompts ${NUM_PROMPTS} \
+      --percentile-metrics ttft,tpot,itl,e2el \
+      --ignore-eos > "$BM_LOG" 2>&1
   else
     echo "Error: unsupported dataset '$DATASET'" > "$BM_LOG" 2>&1
     exit 1

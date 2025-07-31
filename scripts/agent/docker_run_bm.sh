@@ -113,6 +113,12 @@ fi
 
 # ===============  temp solution ===============
 
+if [ "$DATASET" = "sharegpt" ]; then
+  echo "Copying dataset to container..."
+  gsutil -m cp gs://$GCS_BUCKET/dataset/sharegpt/*.* ./artifacts/dataset/
+  docker cp artifacts/dataset "$CONTAINER_NAME:/workspace/"
+fi
+
 echo "copy script run_bm.sh to container..."
 docker cp scripts/agent/run_bm.sh "$CONTAINER_NAME:/workspace/vllm/run_bm.sh"
 
