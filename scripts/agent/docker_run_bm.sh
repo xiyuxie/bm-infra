@@ -113,9 +113,10 @@ fi
 
 # ===============  temp solution ===============
 
-if [ "$DATASET" = "sharegpt" ]; then
+if [ "$DATASET" = "sharegpt" ]; then  
   echo "Copying dataset to container..."
-  gsutil -m cp gs://$GCS_BUCKET/dataset/sharegpt/*.* ./artifacts/dataset/
+  mkdir -p ./artifacts/dataset/
+  gsutil cp gs://$GCS_BUCKET/dataset/sharegpt/*.* ./artifacts/dataset/
   docker cp artifacts/dataset "$CONTAINER_NAME:/workspace/"
 fi
 
