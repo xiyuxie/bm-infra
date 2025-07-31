@@ -150,16 +150,23 @@ run_benchmark(){
       exit 1
     fi
     
-    python benchmarks/benchmark_serving.py \
-      --backend vllm \
-      --model $MODEL \
-      --request-rate $request_rate \
-      --dataset-name sharegpt \
-      --dataset-path $dataset_path \
-      --sharegpt-output=len $OUTPUT_LEN \
-      --num-prompts ${NUM_PROMPTS} \
-      --percentile-metrics ttft,tpot,itl,e2el \
-      --ignore-eos > "$BM_LOG" 2>&1
+    ARGS=(
+      --backend vllm
+      --model "$MODEL"
+      --request-rate "$request_rate"
+      --dataset-name sharegpt
+      --dataset-path "$dataset_path"
+      --num-prompts "$NUM_PROMPTS"
+      --percentile-metrics ttft,tpot,itl,e2el
+      --ignore-eos
+    )
+
+    if [ "$OUTPUT_LEN" -ne 0 ]; then
+      ARGS+=(--sharegpt-output-len "$OUTPUT_LEN")
+    fi
+
+    python benchmarks/benchmark_serving.py "${ARGS[@]}" > "$BM_LOG" 2>&1
+    
   else
     echo "Error: unsupported dataset '$DATASET'" > "$BM_LOG" 2>&1
     exit 1
