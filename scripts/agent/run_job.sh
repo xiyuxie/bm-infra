@@ -31,6 +31,9 @@ fi
 if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then
   echo "Running locally..."
   ./scripts/agent/local_run_bm.sh "artifacts/${RECORD_ID}.env"
+elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
+  echo "Running locally with V2..."
+  ./scripts/agent/local_run_bm_v2.sh "artifacts/${RECORD_ID}.env"
 else
   echo "Running job in docker..."
   ./scripts/agent/docker_run_bm.sh "artifacts/${RECORD_ID}.env"

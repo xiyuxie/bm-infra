@@ -12,20 +12,26 @@ sudo usermod -aG docker bm-agent
 echo "sudo apt-get update && sudo apt-get install -y jq gawk"
 sudo apt-get update && sudo apt-get install -y jq gawk
 
-echo "sudo -u bm-agent -i..."
+# Get current Git branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Run as bm-agent
 sudo -u bm-agent -i bash <<EOF
-echo "gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet"
+echo "Authenticating Docker with gcloud..."
 gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
 
-echo "rm -rf bm-infra"
+echo "Cleaning up old bm-infra..."
 rm -rf bm-infra
 
-echo "git clone https://github.com/QiliangCui/bm-infra.git"
-git clone https://github.com/QiliangCui/bm-infra.git
+echo "Cloning branch '$CURRENT_BRANCH' from bm-infra..."
+git clone --branch "$CURRENT_BRANCH" https://github.com/QiliangCui/bm-infra.git
 
 EOF
 
 if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then  
+  echo "=================================================================="
+  echo "LOCAL_RUN_BM is $LOCAL_RUN_BM: install Miniconda for bm-agent user"
+  echo "=================================================================="
   echo "Installing Miniconda for bm-agent user..."
 
   sudo -u bm-agent -i bash <<'EOF'
@@ -64,6 +70,32 @@ if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then
 
   echo "Miniconda installation complete."
 
+EOF
+
+elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
+  echo "=================================================================="
+  echo "LOCAL_RUN_BM is $LOCAL_RUN_BM: install uv for bm-agent user"
+  echo "=================================================================="
+
+  echo "install python3.12-dev"
+  sudo apt install -y python3.12-dev
+
+  echo "append extra env to /etc/environment"
+  if ! grep -q '^GLOO_SOCKET_IFNAME=lo$' /etc/environment; then
+    echo "Appending GLOO_SOCKET_IFNAME=lo to /etc/environment..."
+    echo 'GLOO_SOCKET_IFNAME=lo' | sudo tee -a /etc/environment > /dev/null
+  else
+    echo "GLOO_SOCKET_IFNAME=lo already set in /etc/environment."
+  fi
+
+  echo "install on behalf of bm-agent user"
+
+  sudo -u bm-agent -i bash <<'EOF'
+  echo "install uv"  
+  echo "curl -LsSf https://astral.sh/uv/install.sh | sh"
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  echo "uv venv --python 3.12 --seed --clear"
+  uv venv --python 3.12 --seed --clear
 EOF
 else
   echo "Skip conda installation..."  
