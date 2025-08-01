@@ -26,6 +26,9 @@ git clone https://github.com/QiliangCui/bm-infra.git
 EOF
 
 if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then  
+  echo "=================================================================="
+  echo "LOCAL_RUN_BM is $LOCAL_RUN_BM: install Miniconda for bm-agent user"
+  echo "=================================================================="
   echo "Installing Miniconda for bm-agent user..."
 
   sudo -u bm-agent -i bash <<'EOF'
@@ -67,7 +70,10 @@ if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then
 EOF
 
 elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
-  echo "LOCAL_RUN_BM is 2: setup local env"
+  echo "=================================================================="
+  echo "LOCAL_RUN_BM is $LOCAL_RUN_BM: install uv for bm-agent user"
+  echo "=================================================================="
+
   echo "install python3.12-dev"
   sudo apt install -y python3.12-dev
 
