@@ -65,21 +65,43 @@ if [[ "${LOCAL_RUN_BM:-}" == "1" ]]; then
   echo "Miniconda installation complete."
 
 EOF
+
+elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
+  echo "LOCAL_RUN_BM is 2: setup local env"
+  echo "install uv"
+  echo "curl -LsSf https://astral.sh/uv/install.sh | sh"
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+
+  echo "install python3.12-dev"
+  sudo apt install python3.12-dev
+
+  echo "uv venv --python 3.12 --seed"
+  uv venv --python 3.12 --seed
+
+  echo "append extra env to /etc/environment"
+  if ! grep -q '^GLOO_SOCKET_IFNAME=lo$' /etc/environment; then
+    echo "Appending GLOO_SOCKET_IFNAME=lo to /etc/environment..."
+    echo 'GLOO_SOCKET_IFNAME=lo' | sudo tee -a /etc/environment > /dev/null
+  else
+    echo "GLOO_SOCKET_IFNAME=lo already set in /etc/environment."
+  fi
+
+
 else
   echo "Skip conda installation..."  
 fi
 
-echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
-sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
+# echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
+# sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
 
-echo "sudo systemctl daemon-reload"
-sudo systemctl daemon-reload
+# echo "sudo systemctl daemon-reload"
+# sudo systemctl daemon-reload
 
-echo "sudo systemctl stop bm-agent.service"
-sudo systemctl stop bm-agent.service
+# echo "sudo systemctl stop bm-agent.service"
+# sudo systemctl stop bm-agent.service
 
-echo "sudo systemctl enable bm-agent.service"
-sudo systemctl enable bm-agent.service
+# echo "sudo systemctl enable bm-agent.service"
+# sudo systemctl enable bm-agent.service
 
-echo "sudo systemctl start bm-agent.service"
-sudo systemctl start bm-agent.service
+# echo "sudo systemctl start bm-agent.service"
+# sudo systemctl start bm-agent.service
