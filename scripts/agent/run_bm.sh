@@ -29,8 +29,9 @@ echo
 mkdir "$WORKSPACE/log"
 
 # TODO: Move to image building.
-pip install pandas
-pip install datasets
+# Ingore the error because in case of using uv, the packages are installed outside this script.
+pip install pandas || true
+pip install datasets || true
 
 if [ "$DATASET" = "sonnet" ]; then
   echo "Create sonnet_4x.txt"
