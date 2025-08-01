@@ -35,6 +35,9 @@ echo "./scripts/scheduler/create_job.sh ./cases/hourly_jax.csv \"\" $TAG HOURLY_
 # Run JAX with new model design
 ./scripts/scheduler/create_job.sh ./cases/hourly_jax_new.csv "" $TAG HOURLY_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;NEW_MODEL_DESIGN=True"
 
+# Run JAX with mmlu dataset
+./scripts/scheduler/create_job.sh ./cases/hourly_jax_mmlu.csv "" $TAG HOURLY_JAX_MMLU TPU_COMMONS "TPU_BACKEND_TYPE=jax"
+
 # Run Torchax + jax backend
 echo "./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv \"\" $TAG HOURLY_AX_JAX TPU_COMMONS \"TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm\""
 ./scripts/scheduler/create_job.sh ./cases/hourly_torchax_jax.csv "" $TAG HOURLY_AX_JAX TPU_COMMONS "TPU_BACKEND_TYPE=jax;MODEL_IMPL_TYPE=vllm"
