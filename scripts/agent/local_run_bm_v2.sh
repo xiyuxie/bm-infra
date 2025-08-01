@@ -5,6 +5,7 @@ set -euo pipefail
 export PATH="/home/bm-agent/.local/bin:$PATH"
 
 echo "================"
+which uv
 echo "$PATH"
 which uv
 uv --version
