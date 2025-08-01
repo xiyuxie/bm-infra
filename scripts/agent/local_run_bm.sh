@@ -82,6 +82,13 @@ echo "Copying and chmod-ing run_bm.sh..."
 cp scripts/agent/run_bm.sh "$VLLM_FOLDER/run_bm.sh"
 chmod +x "$VLLM_FOLDER/run_bm.sh"
 
+if [ "$DATASET" = "sharegpt" ]; then  
+  echo "Copying dataset to container..."
+  mkdir -p ./artifacts/dataset/
+  gsutil cp gs://$GCS_BUCKET/dataset/sharegpt/*.* ./artifacts/dataset/
+  cp -r artifacts/dataset "$TMP_WORKSPACE/"
+fi
+
 # Run benchmark
 echo "Running model benchmark..."
 $CONDA run -n "$ENV_NAME" bash -c "
