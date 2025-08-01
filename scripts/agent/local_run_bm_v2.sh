@@ -1,16 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# enable uv
-export PATH="/home/bm-agent/.local/bin:$PATH"
-
-echo "================"
-which uv
-echo "$PATH"
-which uv
-uv --version
-echo "================"
-
 if [ ! -f "$1" ]; then
   echo "Error: The env file '$1' does not exist."
   exit 1
@@ -26,6 +16,16 @@ source /etc/environment
 set -a
 source "$ENV_FILE"
 set +a
+
+# setup uv
+export PATH="/home/bm-agent/.local/bin:$PATH"
+
+echo "================"
+which uv
+echo "$PATH"
+which uv
+uv --version
+echo "================"
 
 ENV_NAME="vllm-bm-$CODE_HASH"
 
