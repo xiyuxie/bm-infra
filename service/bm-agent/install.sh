@@ -12,16 +12,19 @@ sudo usermod -aG docker bm-agent
 echo "sudo apt-get update && sudo apt-get install -y jq gawk"
 sudo apt-get update && sudo apt-get install -y jq gawk
 
-echo "sudo -u bm-agent -i..."
+# Get current Git branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Run as bm-agent
 sudo -u bm-agent -i bash <<EOF
-echo "gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet"
+echo "Authenticating Docker with gcloud..."
 gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
 
-echo "rm -rf bm-infra"
+echo "Cleaning up old bm-infra..."
 rm -rf bm-infra
 
-echo "git clone https://github.com/QiliangCui/bm-infra.git"
-git clone https://github.com/QiliangCui/bm-infra.git
+echo "Cloning branch '$CURRENT_BRANCH' from bm-infra..."
+git clone --branch "$CURRENT_BRANCH" https://github.com/QiliangCui/bm-infra.git
 
 EOF
 
