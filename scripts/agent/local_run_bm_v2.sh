@@ -7,6 +7,7 @@ export PATH="/home/bm-agent/.local/bin:$PATH"
 echo "================"
 echo "$PATH"
 which uv
+uv --version
 echo "================"
 
 if [ ! -f "$1" ]; then
