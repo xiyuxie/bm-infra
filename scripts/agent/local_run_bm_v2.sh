@@ -57,7 +57,7 @@ fi
 clean_up() { 
    pkill -f vllm || true
    pkill -f VLLM || true
-   ./scripts/agent/clean_old_vllm_envs.sh || true
+   ./scripts/agent/clean_old_vllm_envs_v2.sh || true
 }
 trap clean_up EXIT
 
