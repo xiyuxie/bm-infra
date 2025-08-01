@@ -97,31 +97,21 @@ elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
   echo "uv venv --python 3.12 --seed --clear"
   uv venv --python 3.12 --seed --clear
 EOF
-
-
-
-
-  
-  
-
-  
-
-
 else
   echo "Skip conda installation..."  
 fi
 
-# echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
-# sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
+echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
+sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service
 
-# echo "sudo systemctl daemon-reload"
-# sudo systemctl daemon-reload
+echo "sudo systemctl daemon-reload"
+sudo systemctl daemon-reload
 
-# echo "sudo systemctl stop bm-agent.service"
-# sudo systemctl stop bm-agent.service
+echo "sudo systemctl stop bm-agent.service"
+sudo systemctl stop bm-agent.service
 
-# echo "sudo systemctl enable bm-agent.service"
-# sudo systemctl enable bm-agent.service
+echo "sudo systemctl enable bm-agent.service"
+sudo systemctl enable bm-agent.service
 
-# echo "sudo systemctl start bm-agent.service"
-# sudo systemctl start bm-agent.service
+echo "sudo systemctl start bm-agent.service"
+sudo systemctl start bm-agent.service
