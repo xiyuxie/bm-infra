@@ -49,8 +49,8 @@ if [ ! -d "$ENV_PATH" ]; then
   uv pip install -p "$ENV_PATH/bin/python" pandas datasets
 
   echo "Installing vllm and dependencies..."
-  echo VLLM_USE_PRECOMPILED=1 uv pip install -p "$ENV_PATH/bin/python" -e "$VLLM_FOLDER"
-  VLLM_USE_PRECOMPILED=1 uv pip install -p "$ENV_PATH/bin/python" -e "$VLLM_FOLDER"
+  echo VLLM_USE_PRECOMPILED=1 uv pip install -p "$ENV_PATH/bin/python" -e "$VLLM_FOLDER" --torch-backend=cu128
+  VLLM_USE_PRECOMPILED=1 uv pip install -p "$ENV_PATH/bin/python" -e "$VLLM_FOLDER" --torch-backend=cu128
 fi
 
 # Safety cleanup on exit
