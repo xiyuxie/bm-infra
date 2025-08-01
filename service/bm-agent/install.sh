@@ -95,15 +95,14 @@ EOF
 else
   echo "=================================================================="
   echo "LOCAL_RUN_BM is not set or invalid: run with docker"
-  echo "=================================================================="
-  sudo -u bm-agent -i bash <<EOF
+  echo "=================================================================="  
   echo "sudo usermod -aG docker bm-agent"
   sudo usermod -aG docker bm-agent
 
+  sudo -u bm-agent -i bash <<EOF
   echo "Authenticating Docker with gcloud..."
   gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
 EOF
-
 fi
 
 echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
