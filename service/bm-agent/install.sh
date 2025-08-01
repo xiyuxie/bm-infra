@@ -94,8 +94,8 @@ elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
   echo "install uv"  
   echo "curl -LsSf https://astral.sh/uv/install.sh | sh"
   curl -LsSf https://astral.sh/uv/install.sh | sh
-  echo "uv venv --python 3.12 --seed"
-  uv venv --python 3.12 --seed
+  echo "uv venv --python 3.12 --seed --clear"
+  uv venv --python 3.12 --seed --clear
 EOF
 
 
