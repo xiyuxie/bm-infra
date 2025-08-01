@@ -68,15 +68,8 @@ EOF
 
 elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
   echo "LOCAL_RUN_BM is 2: setup local env"
-  echo "install uv"
-  echo "curl -LsSf https://astral.sh/uv/install.sh | sh"
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-
   echo "install python3.12-dev"
-  sudo apt install python3.12-dev
-
-  echo "uv venv --python 3.12 --seed"
-  uv venv --python 3.12 --seed
+  sudo apt install -y python3.12-dev
 
   echo "append extra env to /etc/environment"
   if ! grep -q '^GLOO_SOCKET_IFNAME=lo$' /etc/environment; then
@@ -85,6 +78,24 @@ elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
   else
     echo "GLOO_SOCKET_IFNAME=lo already set in /etc/environment."
   fi
+
+  echo "install on behalf of bm-agent user"
+
+  sudo -u bm-agent -i bash <<'EOF'
+  echo "install uv"  
+  echo "curl -LsSf https://astral.sh/uv/install.sh | sh"
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  echo "uv venv --python 3.12 --seed"
+  uv venv --python 3.12 --seed
+EOF
+
+
+
+
+  
+  
+
+  
 
 
 else
