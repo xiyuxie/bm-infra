@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+# enable uv
+export PATH="/home/bm-agent/.local/bin:$PATH"
+
 if [ ! -f "$1" ]; then
   echo "Error: The env file '$1' does not exist."
   exit 1
