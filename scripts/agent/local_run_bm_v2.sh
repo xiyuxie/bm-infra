@@ -20,13 +20,6 @@ set +a
 # setup uv
 export PATH="/home/bm-agent/.local/bin:$PATH"
 
-echo "================"
-which uv
-echo "$PATH"
-which uv
-uv --version
-echo "================"
-
 ENV_NAME="vllm-bm-$CODE_HASH"
 
 # setup the uv root dire
@@ -103,7 +96,7 @@ chmod +x "$VLLM_FOLDER/run_bm.sh"
 echo "Running model benchmark..."
 bash -c "
   set -e
-  source '$ENV_DIR/bin/activate'
+  source '$ENV_PATH/bin/activate'
   cd '$VLLM_FOLDER'
   WORKSPACE='$TMP_WORKSPACE' \
   HF_TOKEN='$HF_TOKEN' \
