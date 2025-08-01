@@ -6,9 +6,6 @@ if ! id -u bm-agent >/dev/null 2>&1; then
     sudo useradd -m -s /bin/bash bm-agent
 fi
 
-echo "sudo usermod -aG docker bm-agent"
-sudo usermod -aG docker bm-agent
-
 echo "sudo apt-get update && sudo apt-get install -y jq gawk"
 sudo apt-get update && sudo apt-get install -y jq gawk
 
@@ -17,8 +14,6 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Run as bm-agent
 sudo -u bm-agent -i bash <<EOF
-echo "Authenticating Docker with gcloud..."
-gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
 
 echo "Cleaning up old bm-infra..."
 rm -rf bm-infra
@@ -98,7 +93,17 @@ elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
   uv venv --python 3.12 --seed --clear
 EOF
 else
-  echo "Skip conda installation..."  
+  echo "=================================================================="
+  echo "LOCAL_RUN_BM is not set or invalid: run with docker"
+  echo "=================================================================="
+  sudo -u bm-agent -i bash <<EOF
+  echo "sudo usermod -aG docker bm-agent"
+  sudo usermod -aG docker bm-agent
+
+  echo "Authenticating Docker with gcloud..."
+  gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
+EOF
+
 fi
 
 echo "sudo cp /home/bm-agent/bm-infra/service/bm-agent/bm-agent.service /etc/systemd/system/bm-agent.service"
