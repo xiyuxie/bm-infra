@@ -85,10 +85,14 @@ elif [[ "${LOCAL_RUN_BM:-}" == "2" ]]; then
 
   echo "install on behalf of bm-agent user"
 
-  sudo -u bm-agent -i bash <<'EOF'
+  sudo -u bm-agent -i bash <<EOF
   echo "install uv"  
   echo "curl -LsSf https://astral.sh/uv/install.sh | sh"
   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+  echo export PATH="/home/bm-agent/.local/bin:$PATH"
+  export PATH="/home/bm-agent/.local/bin:$PATH"
+
   echo "uv venv --python 3.12 --seed --clear"
   uv venv --python 3.12 --seed --clear
 EOF
