@@ -111,7 +111,7 @@ bash -c "
   TARGET_COMMIT='$VLLM_HASH' \
   MODEL='$MODEL' \
   ./run_bm.sh
-"
+" || true # let it got through code below to upload oogs
 
 echo "Running model benchmark completed"
 
