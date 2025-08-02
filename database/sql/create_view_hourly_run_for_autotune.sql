@@ -20,6 +20,7 @@ SELECT
     WHEN r.RunType = 'HOURLY' THEN 'torchxla'
     WHEN r.RunType = 'HOURLY_TORCHAX' THEN 'torchax'
     WHEN r.RunType = 'HOURLY_JAX' THEN 'jax'
+    WHEN r.RunType = 'HOURLY_AX_JAX' THEN 'torchax-jax'
     ELSE 'unknown'
   END AS Backend  
 FROM RunRecord r
