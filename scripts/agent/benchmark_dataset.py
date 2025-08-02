@@ -531,8 +531,6 @@ class CustomTokenDataset(BenchmarkDataset):
         **kwargs,
     ) -> list[SampleRequest]:
         requests = []
-        if num_requests > len(self.samples):
-            raise ValueError("not enough samples.")
         for i in range(len(self.samples)):
             token_sequence = self.samples[i]["input_ids"]
             output_len = self.samples[i]["output_tokens"]
