@@ -145,6 +145,9 @@ fi
 mkdir -p artifacts
 echo "Throughput=$throughput" > "artifacts/$RECORD_ID.result"
 
+output_token_throughput=$(grep "Output token throughput (tok/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
+total_token_throughput=$(grep "Total Token throughput (tok/s):" "$BM_LOG" | sed 's/[^0-9.]//g')
+
 extract_value() {
   local section="$1"
   local label="$2"
@@ -172,4 +175,6 @@ P99ITL=$P99ITL
 P99TPOT=$P99TPOT
 P99TTFT=$P99TTFT
 P99ETEL=$P99ETEL
+OutputTokenThroughput=$output_token_throughput
+TotalTokenThroughput=$total_token_throughput
 EOF
