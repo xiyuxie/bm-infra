@@ -113,6 +113,8 @@ bash -c "
   ./run_bm.sh
 "
 
+echo "Running model benchmark completed"
+
 # Copy results
 VLLM_LOG="$LOG_ROOT/${TEST_NAME}_vllm_log.txt"
 BM_LOG="$LOG_ROOT/${TEST_NAME}_bm_log.txt"
