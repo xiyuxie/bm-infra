@@ -16,13 +16,14 @@ SELECT
   r.InputLen,
   r.OutputLen,
   CASE
+    WHEN r.Device  = 'b200-8'  THEN 'b200-8' 
     WHEN r.RunType = 'HOURLY' THEN 'torchxla'
     WHEN r.RunType = 'HOURLY_TORCHAX' THEN 'torchax'
     WHEN r.RunType = 'HOURLY_JAX' THEN 'jax'
     ELSE 'unknown'
   END AS Backend  
 FROM RunRecord r
-WHERE r.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
+WHERE r.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX', 'HOURLY_AX_JAX')
   AND r.Status IN ('COMPLETED', 'FAILED')
   AND r.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
   AND r.Throughput = (
@@ -32,7 +33,7 @@ WHERE r.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
       AND r2.Model = r.Model
       AND r2.CodeHash = r.CodeHash
       AND r2.Device = r.Device
-      AND r2.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX')
+      AND r2.RunType in ('HOURLY', 'HOURLY_TORCHAX', 'HOURLY_JAX', 'HOURLY_AX_JAX')
       AND r2.Dataset = r.Dataset
       AND r2.Status IN ('COMPLETED', 'FAILED')
       AND r2.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
