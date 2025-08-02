@@ -119,12 +119,12 @@ BM_LOG="$LOG_ROOT/${TEST_NAME}_bm_log.txt"
 cp "$TMP_WORKSPACE/vllm_log.txt" "$VLLM_LOG" || true
 cp "$TMP_WORKSPACE/bm_log.txt" "$BM_LOG" || true
 
-# Parse throughput
-throughput=$(grep 'Request throughput (req/s):' "$BM_LOG" | sed 's/[^0-9.]//g')
-echo "Throughput: $throughput"
-
 # Upload to GCS
 gsutil cp "$LOG_ROOT"/* "$REMOTE_LOG_ROOT"
+
+# Parse throughput
+throughput=$(grep 'Request throughput (req/s):' "$BM_LOG" | sed 's/[^0-9.]//g') || true
+echo "Throughput: $throughput" || true
 
 # Check throughput
 if [[ -z "$throughput" || ! "$throughput" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
