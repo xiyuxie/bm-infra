@@ -7,6 +7,7 @@ SELECT
   RunRecord.CodeHash,
   RunRecord.Status,
   RunRecord.Device,
+  RunRecord.Dataset,
   IFNULL(RunRecord.MedianITL, 0) AS MedianITL,
   IFNULL(RunRecord.MedianTPOT, 0) AS MedianTPOT,
   IFNULL(RunRecord.MedianTTFT, 0) AS MedianTTFT,
@@ -29,4 +30,4 @@ WHERE
   AND RunRecord.CreatedTime >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY)
 ORDER BY
   RunRecord.JobReference;
-  
+  \
