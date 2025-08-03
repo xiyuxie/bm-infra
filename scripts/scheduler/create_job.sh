@@ -19,6 +19,22 @@ set -euo pipefail
 #                       VLLM_TORCHAX_ENABLED=1;VLLM_XLA_USE_SPMD=1
 #
 #                     These variables can be parsed and exported within the script as needed.
+#
+#  Others: 
+#   REPO_MAP        - (Optional) An environment variable to map repository URLs to local
+#                     filesystem paths. This accelerates setup by using local mirrors
+#                     instead of performing a fresh `git clone` from the internet.
+#
+#                     The variable must be a string of one or more mappings, separated
+#                     by semicolons (`;`). Each mapping consists of the full repository
+#                     URL, a colon (`||`), and the absolute path to the local mirror.
+#
+#                     Example:
+#                       export REPO_MAP="https://github.com/vllm-project/vllm.git:repos/vllm;https||//github.com/vllm-project/tpu_commons.git||repos/tpu_commons"
+#
+#                     If this variable is not set, or a specific URL is not found in
+#                     the map, the script will gracefully fall back to `git clone`.
+#
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 <INPUT_CSV> [CODE_HASH] [JOB_REFERENCE] [RUN_TYPE] [REPO] [EXTRA_ENVS]"
     exit 1
@@ -30,6 +46,32 @@ JOB_REFERENCE="${3:-}"
 RUN_TYPE="${4:-"MANUAL"}"
 REPO="${5:-"DEFAULT"}"
 EXTRA_ENVS="${6:-}"
+
+# ==============================================================================
+# PARSE THE REPO_MAP ENVIRONMENT VARIABLE (ONCE)
+# ==============================================================================
+# Declare a global associative array to hold the parsed repository mappings.
+declare -A REPO_MAP_ASSOC
+
+# Check if the REPO_MAP environment variable is set and not empty.
+if [[ -n "${REPO_MAP:-}" ]]; then
+  echo "Found REPO_MAP environment variable, parsing local repository paths..."
+  
+  # Temporarily change the Internal Field Separator (IFS) to ';' to split pairs
+  OLD_IFS="$IFS"
+  IFS=';'
+  # Create an array of "key:value" pairs from the string
+  pairs_array=($REPO_MAP)
+  IFS="$OLD_IFS" # Restore IFS immediately
+
+  # Loop through the pairs and populate the associative array
+  for pair in "${pairs_array[@]}"; do
+    key="${pair%%||*}"
+    value="${pair#*||}"
+    REPO_MAP_ASSOC["$key"]="$value"
+  done
+fi
+# ==============================================================================
 
 if [[ "$REPO" != "DEFAULT" && "$REPO" != "TPU_COMMONS" && "$REPO" != "TPU_COMMONS_TORCHAX" ]]; then
   echo "Error: REPO must be one of: DEFAULT, TPU_COMMONS, or TPU_COMMONS_TORCHAX, but got '$REPO'"
@@ -47,8 +89,21 @@ clone_and_get_hash() {
   local dest_folder="$2"
   local target_hash="$3"
 
-  # Clone the repo
-  git clone "$repo_url" "$dest_folder"
+  # Check for a local path in the global associative array
+  local local_repo_path="${REPO_MAP_ASSOC[$repo_url]:-}"
+
+  if [[ -n "$local_repo_path" ]]; then
+    echo "Found local mapping for '$repo_url'. Copying from '$local_repo_path'..." >&2
+    if [ ! -d "$local_repo_path" ]; then
+        echo "Error: Mapped path '$local_repo_path' does not exist." >&2
+        return 1
+    fi
+    cp -a "$local_repo_path" "$dest_folder"
+  else
+    echo "No local mapping found. Cloning from '$repo_url'..." >&2
+    git clone "$repo_url" "$dest_folder"
+  fi
+
   pushd "$dest_folder" > /dev/null
 
   # If target hash is provided, reset to it
