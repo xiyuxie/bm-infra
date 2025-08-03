@@ -136,8 +136,9 @@ if [[ "${SKIP_BUILD_IMAGE:-0}" != "1" ]]; then
     echo "pushd ./artifacts/vllm"
     pushd ./artifacts/vllm
     git add .
-    echo git commit --author="$USER <$USER@google.com>" -m "temp patch."
-    git commit --author="$USER <$USER@google.com>" -m "temp patch."
+    git config user.name "$USER"
+    git config user.email "$USER@google.com"
+    git commit -m "temp patch."
 
     NEW_VLLM_HASH=$(git rev-parse --short HEAD)
 
