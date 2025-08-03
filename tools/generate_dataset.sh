@@ -36,7 +36,7 @@ generate_dataset() {
 model_name="meta-llama/Llama-3.1-8B-Instruct"
 tp_size=1
 
-generate_dataset "$model_name" 1800 128 10 $tp_size
+generate_dataset "$model_name" 1800 128 1000 $tp_size
 # generate_dataset "$model_name" 1800 128 3000 $tp_size
 # generate_dataset "$model_name" 128 128 30000 $tp_size
 # generate_dataset "$model_name" 128 2048 3000 $tp_size
