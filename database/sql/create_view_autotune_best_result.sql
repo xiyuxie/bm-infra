@@ -16,6 +16,7 @@ SELECT
   r.OutputLen,
   r.ExpectedETEL,
   CASE
+    WHEN r.Device  = 'b200-8'  THEN 'b200-8' 
     WHEN r.RunType = 'AUTOTUNE' THEN 'torchxla'
     WHEN r.RunType = 'AUTOTUNE_TORCHAX' THEN 'torchax'
     WHEN r.RunType = 'AUTOTUNE_JAX' THEN 'jax'
