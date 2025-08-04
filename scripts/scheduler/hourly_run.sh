@@ -101,11 +101,11 @@ if [[ "$HOUR_NOW" == "00" || "$HOUR_NOW" == "12" ]]; then
   # ./scripts/scheduler/create_job.sh ./cases/autotune_adhoc.csv "" $TAG AUTOTUNE
 fi
 
-if [[ "$HOUR_NOW" == "00" ]]; then
-  # B200 not enough hardware to run it twice a day.
-  echo "./scripts/scheduler/create_job.sh ./cases/autotune_b200.csv \"\" $TAG AUTOTUNE"
-  ./scripts/scheduler/create_job.sh ./cases/autotune_b200.csv "" $TAG AUTOTUNE
-fi
+# if [[ "$HOUR_NOW" == "00" ]]; then
+#   # B200 not enough hardware to run it twice a day.
+#   echo "./scripts/scheduler/create_job.sh ./cases/autotune_b200.csv \"\" $TAG AUTOTUNE"
+#   ./scripts/scheduler/create_job.sh ./cases/autotune_b200.csv "" $TAG AUTOTUNE
+# fi
 
 echo LOCAL_PATCH=1 ./scripts/scheduler/create_job.sh ./cases/hourly_disagg.csv "" $TAG HOURLY_DISAGG TPU_COMMONS "PREFILL_SLICES=2;DECODE_SLICES=2;TPU_BACKEND_TYPE=jax"
 LOCAL_PATCH=1 ./scripts/scheduler/create_job.sh ./cases/hourly_disagg.csv "" $TAG HOURLY_DISAGG TPU_COMMONS "PREFILL_SLICES=2;DECODE_SLICES=2;TPU_BACKEND_TYPE=jax"
