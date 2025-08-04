@@ -43,13 +43,13 @@ else
   ./scripts/scheduler/create_job.sh ./cases/hourly_gpu_2.csv "" $TAG HOURLY
 fi
 
-# B200 is not stable right now. Lower the running frequency to reduce the load.
-if (( 10#$HOUR_NOW % 6 == 0 )); then
-  # Run b200-8
-  # todo: this can be merged into hourly run.
-  echo "./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv \"\" $TAG HOURLY"
-  ./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv "" $TAG HOURLY
-fi
+# # B200 is not stable right now. Lower the running frequency to reduce the load.
+# if (( 10#$HOUR_NOW % 6 == 0 )); then
+#   # Run b200-8
+#   # todo: this can be merged into hourly run.
+#   echo "./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv \"\" $TAG HOURLY"
+#   ./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv "" $TAG HOURLY
+# fi
 
 # Run TPU Commons + TorchAX test.
 # Eventually, TorchAx and vLLM should run the same test case.
