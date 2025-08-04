@@ -1,10 +1,4 @@
 Device,Model,MaxNumSeqs,MaxNumBatchedTokens,TensorParallelSize,MaxModelLen,Dataset,InputLen,OutputLen,ExpectedETEL,NumPrompts
-b200-8,meta-llama/Llama-3.1-70B-Instruct,256,2048,8,2048,sonnet,1800,128,,
-b200-8,Qwen/Qwen2.5-32B,256,2048,8,2048,sonnet,1800,128,,
-b200-8,meta-llama/Llama-3.1-8B-Instruct,256,1024,1,2048,sonnet,1800,128,,
-b200-8,meta-llama/Llama-3.1-70B-Instruct,256,2048,8,2048,random,1800,128,,
-b200-8,Qwen/Qwen2.5-32B,256,2048,8,2048,random,1800,128,,
-b200-8,meta-llama/Llama-3.1-8B-Instruct,256,1024,1,2048,random,1800,128,,
-b200-8,meta-llama/Llama-3.1-70B-Instruct,256,2048,8,2048,sharegpt,1800,128,,
-b200-8,Qwen/Qwen2.5-32B,256,2048,8,2048,sharegpt,1800,128,,
-b200-8,meta-llama/Llama-3.1-8B-Instruct,256,1024,1,2048,sharegpt,1800,128,,
+b200-8,meta-llama/Llama-3.1-8B-Instruct,128,4096,1,2048,sonnet,1800,128,,
+b200-8,Qwen/Qwen2.5-32B,512,4096,8,2048,sonnet,1800,128,,
+b200-8,meta-llama/Llama-3.1-70B-Instruct,256,4096,8,2048,sonnet,1800,128,,
