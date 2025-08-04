@@ -33,11 +33,6 @@ export REPO_MAP="$REPO_MAP_STRING"
 echo "./scripts/scheduler/create_job.sh ./cases/hourly.csv \"\" $TAG HOURLY"
 ./scripts/scheduler/create_job.sh ./cases/hourly.csv "" $TAG HOURLY
 
-# Run b200-8
-# todo: this can be merged into hourly run.
-echo "./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv \"\" $TAG HOURLY"
-./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv "" $TAG HOURLY
-
 # Run gpu_1 on even hours, gpu_2 on odd hours
 # Because I don't have enough h100-8 now.
 if (( 10#$HOUR_NOW % 2 == 0 )); then
@@ -46,6 +41,14 @@ if (( 10#$HOUR_NOW % 2 == 0 )); then
 else
   echo "./scripts/scheduler/create_job.sh ./cases/hourly_gpu_2.csv \"\" $TAG HOURLY"
   ./scripts/scheduler/create_job.sh ./cases/hourly_gpu_2.csv "" $TAG HOURLY
+fi
+
+# B200 is not stable right now. Lower the running frequency to reduce the load.
+if (( 10#$HOUR_NOW % 6 == 0 )); then
+  # Run b200-8
+  # todo: this can be merged into hourly run.
+  echo "./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv \"\" $TAG HOURLY"
+  ./scripts/scheduler/create_job.sh ./cases/hourly_b200.csv "" $TAG HOURLY
 fi
 
 # Run TPU Commons + TorchAX test.
